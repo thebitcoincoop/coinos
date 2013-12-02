@@ -1,0 +1,2 @@
+Sequelize = require('sequelize')
+module.exports = new Sequelize('pos', 'user', 'password', dialect: 'postgres')

@@ -1,6 +1,6 @@
 #= require jquery-1.8.2.min.js
 #= require moment.min.js
-#= require qrcode.js
+#= require qrcode.min.js
 #= require bootstrap.min.js
 #= require 2.5.3-crypto-sha256.js
 #= require jsbn.js
@@ -21,6 +21,9 @@ $(->
   g.commission = parseFloat(get('commission'))
   g.logo = get('logo')
   g.errors = []
+  g.addresses = []
+  g.orders = []
+  g.unit = 'mBTC'
 
   if g.user
     $.ajax(
@@ -29,7 +32,7 @@ $(->
       success: (data) ->
         if data?
           g.title = data.title
-          g.address = data.address 
+          g.addresses = data.addresses
           g.symbol = data.symbol
           g.commission = data.commission 
           g.logo = data.logo 
@@ -38,19 +41,62 @@ $(->
   else 
     setup()
 
-  $('#amount').keyup(updateTotal)
   $('#amount').focus(->
     $('#received').hide()
-    $('#payment').fadeIn('slow')
     $(this).val('')
-    updateTotal()
+  ).focus()
+
+  $('form#calculator').submit((e) ->
+    createOrder()
+    e.preventDefault()
+  )
+
+  $('.cancel').live('click', ->
+    $(this).closest('.order').hide()
   )
 )
+
+
+createOrder = ->
+  multiplier = switch g.unit
+    when 'BTC' then 1
+    when 'mBTC' then 1000
+    when '&micro;BTC' then 1000000
+    when 'satoshis' then 100000000
+  precision = 9 - multiplier.toString().length
+
+  address = g.addresses.pop()
+  amount = parseFloat($('#amount').val())
+  total = (amount * multiplier / g.exchange).toFixed(precision)
+  unless $.isNumeric(total)
+    total = ''
+
+  g.orders.push(
+    amount: total
+    address: address
+  )
+  id = g.orders.length
+
+  order = $('.order').first().clone().hide()
+  $('.order').first().before(order)
+  order.show()
+
+  order.find('.fiat_total').html(amount.toFixed(2))
+  order.find('.bitcoin_total').html(total.toString())
+  order.find('.unit').html(g.unit)
+  order.find('.address').html(g.address)
+  order.find('.qr').attr('id', "qr_#{id}").html('')
+  qr = new QRCode("qr_#{id}", 
+    width: 180, 
+    height: 180
+  )
+
+  qr.makeCode("bitcoin:#{g.addresses.pop()}?amount=#{total.toString()}")
 
 setup = ->
   g.address or= '1VAnbtCAnYccECnjaMCPnWwt81EHCVgNr'
   g.commission or= 0
-  g.symbol or= 'mtgoxUSD'
+  g.symbol or= 'virtexCAD'
 
   if g.title 
     $('#title').html(g.title).show()
@@ -58,7 +104,7 @@ setup = ->
   if g.logo
     $('#logo').attr('src', g.logo).show()
   else unless g.title
-    $('#logo').attr('src', 'img/bitcoin.png').show()
+    $('#logo').attr('src', '/img/bitcoin_coop.png').show()
 
   address = g.address
   if g.user? and g.user
@@ -75,8 +121,16 @@ setup = ->
   $('#currency').html(g.symbol.slice(-3))
   $('#received').hide()
 
-  setupSocket()
-  fetchExchangeRate()
+  # setInterval(keepSocketsAlive, 5000)
+  # fetchExchangeRate()
+  fakeExchangeRate()
+
+fakeExchangeRate = ->
+  unless g.setupComplete
+    finalize() 
+  clear(EXCHANGE_FAIL)
+  g.exchange = 420.00
+  $('#exchange').val(g.exchange.toFixed(2))
 
 fetchExchangeRate = ->
   $.ajax(
@@ -93,7 +147,6 @@ fetchExchangeRate = ->
 
       g.exchange = exchange - exchange * g.commission * 0.01
       $('#exchange').val(g.exchange.toFixed(2))
-      updateTotal()
     error: -> fail(EXCHANGE_FAIL)
   )
   setTimeout(fetchExchangeRate, 900000)
@@ -102,63 +155,53 @@ finalize = ->
   $('#amount').focus()
   g.setupComplete = true
 
-setupSocket = ->
-  setTimeout(setupSocket, 10000)
+keepAlive = ->
+  for order in g.orders
+    unless order.socket and order.socket.readyState is 1
+      order.socket = new WebSocket("ws://ws.blockchain.info/inv")
 
-  unless g.websocket and g.websocket.readyState is 1
-    g.websocket = new WebSocket("ws://ws.blockchain.info/inv")
-
-    g.websocket.onopen = -> 
-      g.websocket.send('{"op":"addr_sub", "addr":"' + g.address + '"}')
-    
-    g.websocket.onerror =  ->
-      g.websocket = null
-      fail(SOCKET_FAIL)
-
-    g.websocket.onclose = ->
-      setupSocket()
-
-    g.websocket.onmessage = (e) ->
-      results = eval('(' + e.data + ')')
-      from_address = ''
-      total = 0
-      received = 0
+      order.socket.onopen = -> 
+        clear(SOCKET_FAIL)
+        order.socket.send('{"op":"addr_sub", "addr":"' + order.address + '"}')
       
-      $.each(results.x.out, (i, v) ->
-        if (v.addr == g.address) 
-          received += v.value / 100000000
-      )
+      order.socket.onerror = ->
+        order.socket = null
+        fail(SOCKET_FAIL)
 
-      $.each(results.x.inputs, (i, v) ->
-        from_address = v.prev_out.addr
-        if (v.prev_out.addr == g.address) 
-          input -= v.prev_out.value / 100000000
-      )
+      order.socket.onclose = ->
+        order.socket = null
+        fail(SOCKET_FAIL)
 
-      if (total <= received) 
-        $('#amount').blur()
-        $('#payment').hide()
-        $('#received').fadeIn('slow')
-
-      if g.user
-        $.post("/#{g.user}/transactions",
-          address: from_address,
-          date: moment().format("YYYY-MM-DD HH:mm:ss"),
-          received: received,
-          exchange: g.exchange
+      order.socket.onmessage = (e) ->
+        results = eval('(' + e.data + ')')
+        from_address = ''
+        total = 0
+        received = 0
+        
+        $.each(results.x.out, (i, v) ->
+          if (v.addr == g.address) 
+            received += v.value / 100000000
         )
 
-updateTotal = ->
-  amount = parseFloat($('#amount').val())
-  total = amount / g.exchange
-  total = Math.ceil(total * 10000) / 10
+        $.each(results.x.inputs, (i, v) ->
+          from_address = v.prev_out.addr
+          if (v.prev_out.addr == g.address) 
+            input -= v.prev_out.value / 100000000
+        )
 
-  unless $.isNumeric(total)
-    total = ''
+        if (total <= received) 
+          $('#amount').blur()
+          $('#order').hide()
+          $('#received').fadeIn('slow')
 
-  $('#total').html(total.toString())
-  $('#qr').html('')
-  new QRCode('qr', "bitcoin:#{g.address}?amount=#{total.toString()}")
+        if g.user
+          $.post("/#{g.user}/transactions",
+            address: from_address,
+            date: moment().format("YYYY-MM-DD HH:mm:ss"),
+            received: received,
+            exchange: g.exchange
+          )
+
 
 fail = (msg) ->
   g.errors.push(msg)
@@ -182,11 +225,12 @@ get = (name) ->
   results = regex.exec(window.location.search)
 
   if (results == null)
-    return ""
+    ""
   else
-    return decodeURIComponent(results[1].replace(/\+/g, " "))
+    decodeURIComponent(results[1].replace(/\+/g, " "))
 
 Array::uniq = ->
   output = {}
   output[@[key]] = @[key] for key in [0...@length]
   value for key, value of output
+

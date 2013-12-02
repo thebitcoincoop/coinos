@@ -4,6 +4,7 @@ engines = require('consolidate')
 passport = require('./passport')
 
 calculator = require("./routes/calculator")
+orders = require("./routes/orders")
 sessions = require("./routes/sessions")(passport)
 transactions = require("./routes/transactions")
 users = require("./routes/users")(sessions)
@@ -55,6 +56,9 @@ app.get('/:user/transactions.json', authorize, transactions.json)
 app.post('/:user/transactions', authorize, transactions.create)
 app.get('/:user/report', authorize, transactions.index)
 app.get('/:user', users.show)
+
+app.get('/:user/orders.json', authorize, orders.json)
+app.post('/:user/orders', authorize, orders.create)
 
 app.use((err, req, res, next) ->
   res.status(500)

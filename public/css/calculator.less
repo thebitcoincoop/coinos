@@ -7,19 +7,18 @@ body { font-size: 100%; line-height: 100%; }
 h1 { width: 100%; }
 	
 div.container-fluid {
-  width: 600px;
+  width: 480px;
   margin-left: auto;
   margin-right: auto;
   text-align:left;
 }
 
-div#calculator {
+form#calculator {
   p, span, input[type="text"] { font-size: 1.4em; }
   input[type="text"] { height: 1.4em; }
   #exchange, #amount { width: 5em; }
   span.btn { font-size: 1.4em; width: 80%; }
   small, label { color: #999; font-size: 1.2em; }
-  strong#total { font-size: 2em; }
   #title { display: none; }
   #logo { display: none; padding: 10px 0; margin-bottom: 10px; max-height: 250px; }
   #error { margin-top: 10px; }
@@ -27,4 +26,14 @@ div#calculator {
 
 td#total { font-weight: bold; text-align: right; }
 small { color: #999; }
-div#calculator p#address { font-size: 1em; margin-top: 20px; }
+form#calculator p#address { font-size: 10px; }
+
+div.order {
+  cursor: default; width: 480px; text-align: left; overflow: auto; display: none;
+
+  strong.bitcoin_total { font-size: 3em; }
+  .details { margin-left: 185px; }
+  button { margin-top: 30px; margin-right: 15px; float: right; }
+  .qr { float: left; padding: 5px; }
+  .address { margin-left: 20px; margin-top: 10px; font-size: 0.9em; }
+}

@@ -10,11 +10,11 @@
   </head>
   <body>
     <div class="container-fluid">
-      <div id="calculator" style="display: none">
+      <form id="calculator" style="display: none">
         <input id="user" type="hidden" value="{{user}}" />
 
         <h1 id="title"></h1>
-        <img id="logo" src="img/logo.jpg" alt="Logo" />
+        <img id="logo" src="/img/bitcoin_coop.png" alt="Logo" />
 
         <label for="exchange">Exchange Rate:</label>
         <input type="text" id="exchange" value="0" disabled="disabled" />
@@ -24,17 +24,24 @@
         <input type="text" id="amount" />
         <small id="currency"></small>
 
-        <br /><br />
+        <br />
+        <input type="submit" value="Request Payment" />
+      </form>
 
-        <div id="payment">
-          <p>Please send <strong id="total">0.0</strong> mBTC to</p><br />
-          <div id="qr"></div>
-          <p id="address"></p>
+      <div class="order btn btn-block">
+        <div class="qr"></div>
 
+        <div class="details">
+          <p>Please pay </p>
+          <strong class="bitcoin_total">0.0</strong> <span class="unit"></span><br />
+          ($<strong class="fiat_total"></strong>) to:
+          <p class="address"></p>
         </div>
 
-        <span id="received" class="btn btn-success">Payment Received.  Thank you!</span>
+        <button class="cancel btn-danger">Cancel</button>
       </div>
+
+      <span id="received" class="btn btn-success">Payment Received.  Thank you!</span>
 
       <span id="error" class="btn btn-danger" style="display: none"></span> 
     </div>
