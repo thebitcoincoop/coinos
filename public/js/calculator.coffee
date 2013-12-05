@@ -56,15 +56,20 @@ $(->
     e.preventDefault()
   )
 
-  $('.cancel').live('click', ->
-    $(this).closest('.order').hide()
+  $('.btn-danger').live('click', ->
+    $(this).closest('.btn-block').hide()
+  )
+
+  $('.order').live('click', ->
+    $('.order').addClass('small')
+    $(this).removeClass('small')
   )
 )
 
 
 createOrder = ->
   precision = 9 - multiplier().toString().length
-  address = g.addresses.pop()
+  address = getAddress()
   amount = parseFloat($('#amount').val())
   total = (amount * multiplier() / g.exchange).toFixed(precision)
   unless $.isNumeric(total)
@@ -76,9 +81,9 @@ createOrder = ->
   )
   id = g.orders.length
 
-  order = $('.order').first().clone().hide()
-  $('.order').first().before(order)
-  order.show()
+  $('.order').addClass('small')
+  order = $('.ordertemplate').clone().attr('class', 'order btn btn-block').show()
+  $('#calculator').after(order)
 
   order.find('.fiat_total').html(amount.toFixed(2))
   order.find('.bitcoin_total').html(total.toString())
@@ -231,3 +236,11 @@ Array::uniq = ->
 
 isNumber = (n) ->
   !isNaN(parseFloat(n)) && isFinite(n)
+
+getAddress = (-> 
+  cc = 0
+  ->
+    cc = (cc + 1) % g.addresses.length
+    g.addresses[cc]
+)()
+
