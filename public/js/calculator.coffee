@@ -14,14 +14,14 @@ ADDRESS_FAIL = "Invalid address"
 g = exports ? this
 
 $(->
+  g.addresses = ['1VAnbtCAnYccECnjaMCPnWwt81EHCVgNr','18DtqERJnnaBktezXfFXqYVSnCYWd6trZm']
+
   g.user = $('#user').val()
   g.title = get('title')
-  g.address = get('address')
   g.symbol = get('symbol')
   g.commission = parseFloat(get('commission'))
   g.logo = get('logo')
   g.errors = []
-  g.addresses = []
   g.orders = []
   g.unit = 'mBTC'
 
@@ -47,7 +47,12 @@ $(->
   ).focus()
 
   $('form#calculator').submit((e) ->
-    createOrder()
+    if isNumber($('#amount').val())
+      $('#amount').css('border-color', 'blue')
+      createOrder()
+    else
+      $('#amount').css('border-color', 'red')
+
     e.preventDefault()
   )
 
@@ -58,16 +63,10 @@ $(->
 
 
 createOrder = ->
-  multiplier = switch g.unit
-    when 'BTC' then 1
-    when 'mBTC' then 1000
-    when '&micro;BTC' then 1000000
-    when 'satoshis' then 100000000
-  precision = 9 - multiplier.toString().length
-
+  precision = 9 - multiplier().toString().length
   address = g.addresses.pop()
   amount = parseFloat($('#amount').val())
-  total = (amount * multiplier / g.exchange).toFixed(precision)
+  total = (amount * multiplier() / g.exchange).toFixed(precision)
   unless $.isNumeric(total)
     total = ''
 
@@ -84,17 +83,16 @@ createOrder = ->
   order.find('.fiat_total').html(amount.toFixed(2))
   order.find('.bitcoin_total').html(total.toString())
   order.find('.unit').html(g.unit)
-  order.find('.address').html(g.address)
+  order.find('.address').html(address)
   order.find('.qr').attr('id', "qr_#{id}").html('')
   qr = new QRCode("qr_#{id}", 
     width: 180, 
     height: 180
   )
 
-  qr.makeCode("bitcoin:#{g.addresses.pop()}?amount=#{total.toString()}")
+  qr.makeCode("bitcoin:#{address}?amount=#{total.toString()}")
 
 setup = ->
-  g.address or= '1VAnbtCAnYccECnjaMCPnWwt81EHCVgNr'
   g.commission or= 0
   g.symbol or= 'virtexCAD'
 
@@ -106,15 +104,6 @@ setup = ->
   else unless g.title
     $('#logo').attr('src', '/img/bitcoin_coop.png').show()
 
-  address = g.address
-  if g.user? and g.user
-    address = "<a href='/#{g.user}/report'>#{address}</a>"
-
-  if check_address(g.address)
-    $('#address').html(address)
-  else
-    fail(ADDRESS_FAIL)
-    
   symbol = g.symbol
 
   $('#symbol').html(symbol)
@@ -180,13 +169,13 @@ keepAlive = ->
         
         $.each(results.x.out, (i, v) ->
           if (v.addr == g.address) 
-            received += v.value / 100000000
+            received += v.value
         )
 
         $.each(results.x.inputs, (i, v) ->
           from_address = v.prev_out.addr
           if (v.prev_out.addr == g.address) 
-            input -= v.prev_out.value / 100000000
+            input -= v.prev_out.value
         )
 
         if (total <= received) 
@@ -198,10 +187,9 @@ keepAlive = ->
           $.post("/#{g.user}/transactions",
             address: from_address,
             date: moment().format("YYYY-MM-DD HH:mm:ss"),
-            received: received,
+            received: received ,
             exchange: g.exchange
           )
-
 
 fail = (msg) ->
   g.errors.push(msg)
@@ -229,8 +217,17 @@ get = (name) ->
   else
     decodeURIComponent(results[1].replace(/\+/g, " "))
 
+multiplier = ->
+  switch g.unit
+    when 'BTC' then 1
+    when 'mBTC' then 1000
+    when '&micro;BTC' then 1000000
+    when 'satoshis' then 100000000
+
 Array::uniq = ->
   output = {}
   output[@[key]] = @[key] for key in [0...@length]
   value for key, value of output
 
+isNumber = (n) ->
+  !isNaN(parseFloat(n)) && isFinite(n)
