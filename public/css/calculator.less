@@ -29,20 +29,25 @@ small { color: #999; }
 form#calculator p#address { font-size: 10px; }
 
 div.order {
-  cursor: default; width: 480px; text-align: left; overflow: auto; display: none;
+  cursor: default; width: 480px; text-align: left; overflow: auto; padding: 0; margin-bottom: 10px;
 
   strong.bitcoin_total { font-size: 3em; }
   .details { margin-left: 185px; }
-  button { margin-top: 30px; margin-right: 15px; float: right; }
-  .qr { float: left; padding: 5px; }
-  .address { margin-left: 20px; margin-top: 10px; font-size: 0.9em; }
+  button { margin: 5px; margin-top: 50px; float: right; }
+  .qr { display: block; float: left; padding: 5px; }
+  .paid { display: none; }
 }
 
 
 div.small {
-  .please { display: none; }
+  .break, .link, .please { display: none; }
   strong.bitcoin_total { font-size: 1em; }
-  .details { margin-left: 105px; }
-  button { margin-right: 15px; float: right; }
-  .qr { float: left; padding: 5px; height: 100px; width: 100px; }
+  .details { margin-left: 5px; }
+  button { margin: 5px; float: right; }
+  .qr { display: none; }
+}
+
+div.paid {
+  .cancel { display: none; }
+  .paid { display: block; }
 }

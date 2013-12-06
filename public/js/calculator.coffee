@@ -66,7 +66,6 @@ $(->
   )
 )
 
-
 createOrder = ->
   precision = 9 - multiplier().toString().length
   address = getAddress()
@@ -75,27 +74,39 @@ createOrder = ->
   unless $.isNumeric(total)
     total = ''
 
-  g.orders.push(
-    amount: total
+  order = 
+    id: g.orders.length
+    total: total
     address: address
-  )
-  id = g.orders.length
+    socket: null
 
-  $('.order').addClass('small')
-  order = $('.ordertemplate').clone().attr('class', 'order btn btn-block').show()
-  $('#calculator').after(order)
+  # createSocket(order)
+  g.orders.push(order)
 
-  order.find('.fiat_total').html(amount.toFixed(2))
-  order.find('.bitcoin_total').html(total.toString())
-  order.find('.unit').html(g.unit)
-  order.find('.address').html(address)
-  order.find('.qr').attr('id', "qr_#{id}").html('')
-  qr = new QRCode("qr_#{id}", 
+  div = $('.ordertemplate').clone()
+  div.attr('class', 'order btn btn-block')
+  $('#calculator').after(div)
+
+  div.find('.fiat_total').html(amount.toFixed(2))
+  div.find('.bitcoin_total').html(total.toString())
+  div.find('.unit').html(g.unit)
+  div.find('.address').html(address)
+  div.find('.qr').attr('id', "qr_#{order.id}").html('')
+  qr = new QRCode("qr_#{order.id}", 
     width: 180, 
     height: 180
   )
-
   qr.makeCode("bitcoin:#{address}?amount=#{total.toString()}")
+
+  if $('.order').length > 1
+    $('.order:nth-child(3)').animate(marginTop: '100px', ->
+      $(this).addClass('small')
+      $(this).css('margin-top', 0)
+      div.fadeIn()
+    )
+  else
+    div.fadeIn()
+
 
 setup = ->
   g.commission or= 0
@@ -149,52 +160,34 @@ finalize = ->
   $('#amount').focus()
   g.setupComplete = true
 
-keepAlive = ->
-  for order in g.orders
-    unless order.socket and order.socket.readyState is 1
-      order.socket = new WebSocket("ws://ws.blockchain.info/inv")
+createSocket = (order) ->
+  unless order.socket and order.socket.readyState is 1
+    order.socket = new WebSocket("ws://ws.blockchain.info/inv")
 
-      order.socket.onopen = -> 
-        clear(SOCKET_FAIL)
-        order.socket.send('{"op":"addr_sub", "addr":"' + order.address + '"}')
+    order.socket.onopen = -> 
+      clear(SOCKET_FAIL)
+      order.socket.send('{"op":"addr_sub", "addr":"' + order.address + '"}')
+    
+    order.socket.onerror = ->
+      order.socket = null
+      fail(SOCKET_FAIL)
+
+    order.socket.onclose = ->
+      order.socket = null
+      fail(SOCKET_FAIL)
+
+    order.socket.onmessage = (e) ->
+      results = eval('(' + e.data + ')')
+      total = 0
+      received = 0
       
-      order.socket.onerror = ->
-        order.socket = null
-        fail(SOCKET_FAIL)
+      $.each(results.x.out, (i, v) ->
+        if (v.addr == order.address) 
+          received += v.value
+      )
 
-      order.socket.onclose = ->
-        order.socket = null
-        fail(SOCKET_FAIL)
-
-      order.socket.onmessage = (e) ->
-        results = eval('(' + e.data + ')')
-        from_address = ''
-        total = 0
-        received = 0
-        
-        $.each(results.x.out, (i, v) ->
-          if (v.addr == g.address) 
-            received += v.value
-        )
-
-        $.each(results.x.inputs, (i, v) ->
-          from_address = v.prev_out.addr
-          if (v.prev_out.addr == g.address) 
-            input -= v.prev_out.value
-        )
-
-        if (total <= received) 
-          $('#amount').blur()
-          $('#order').hide()
-          $('#received').fadeIn('slow')
-
-        if g.user
-          $.post("/#{g.user}/transactions",
-            address: from_address,
-            date: moment().format("YYYY-MM-DD HH:mm:ss"),
-            received: received ,
-            exchange: g.exchange
-          )
+      if (total <= received) 
+        $("#order_#{order.id}").addClass('paid')
 
 fail = (msg) ->
   g.errors.push(msg)
@@ -235,7 +228,7 @@ Array::uniq = ->
   value for key, value of output
 
 isNumber = (n) ->
-  !isNaN(parseFloat(n)) && isFinite(n)
+  !isNaN(parseFloat(n)) && isFinite(n) && n > 0
 
 getAddress = (-> 
   cc = 0
