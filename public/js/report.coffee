@@ -48,13 +48,14 @@ display = (transactions) ->
     exchange = parseFloat(this.exchange)
     received = parseFloat(this.received)
     amount = received * exchange
+    received *= 1000
 
     $('tbody').append("""
       <tr>
         <td>#{this.date}</td>
         <td>#{this.address}</td>
         <td>#{exchange.toFixed(2)}</td>
-        <td>#{received.toFixed(2)}</td>
+        <td>#{received.toFixed(5)}</td>
         <td>#{amount.toFixed(2)}</td>
       </tr>
     """)
@@ -64,7 +65,7 @@ display = (transactions) ->
   $('td:nth-child(4)').each(->
     btc += parseFloat($(this).html())
   )
-  $('#btc').html(btc.toFixed(2))
+  $('#btc').html(btc.toFixed(5))
 
   cad = 0
   $('td:nth-child(5)').each(->

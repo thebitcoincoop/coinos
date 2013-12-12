@@ -1,4 +1,4 @@
-#= require jquery-1.8.2.min.js
+#= require jquery-2.0.3.min.js
 #= require moment.min.js
 #= require qrcode.min.js
 #= require bootstrap.min.js
@@ -56,15 +56,22 @@ $(->
     e.preventDefault()
   )
 
-  $('.btn-danger').live('click', ->
+  $('.btn-danger').on('click', ->
     $(this).closest('.btn-block').hide()
   )
 
-  $('.order').live('click', ->
+  $('.order').on('click', ->
     $('.order').addClass('small')
     $(this).removeClass('small')
   )
 )
+
+getAddress = (-> 
+  cc = 0
+  ->
+    cc = (cc + 1) % g.addresses.length
+    g.addresses[cc]
+)()
 
 createOrder = ->
   precision = 9 - multiplier().toString().length
@@ -230,10 +237,4 @@ Array::uniq = ->
 isNumber = (n) ->
   !isNaN(parseFloat(n)) && isFinite(n) && n > 0
 
-getAddress = (-> 
-  cc = 0
-  ->
-    cc = (cc + 1) % g.addresses.length
-    g.addresses[cc]
-)()
 
