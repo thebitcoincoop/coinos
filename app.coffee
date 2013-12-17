@@ -51,9 +51,9 @@ app.get('/:user/edit', authorize, users.edit)
 app.post('/:user/update', authorize, users.update)
 
 app.get('/:user/transactions.json', authorize, transactions.json)
-app.post('/:user/transactions', authorize, transactions.create)
+app.post('/:user/transactions', transactions.create)
 app.get('/:user/report', authorize, transactions.index)
-app.get('/:user', authorize, users.show)
+app.get('/:user', users.show)
 
 app.get('/:user/orders.json', authorize, orders.json)
 app.post('/:user/orders', authorize, orders.create)

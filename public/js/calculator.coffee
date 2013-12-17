@@ -14,37 +14,30 @@ ADDRESS_FAIL = "Invalid address"
 g = exports ? this
 
 $(->
-  g.addresses = ['1VAnbtCAnYccECnjaMCPnWwt81EHCVgNr','18DtqERJnnaBktezXfFXqYVSnCYWd6trZm']
-
-  g.user = $('#user').val()
-  g.title = get('title')
-  g.symbol = get('symbol')
-  g.commission = parseFloat(get('commission'))
-  g.logo = get('logo')
   g.errors = []
   g.orders = []
   g.unit = 'mBTC'
 
-  if g.user
-    $.ajax(
-      url: g.user + '.json', 
-      dataType: 'json',
-      success: (data) ->
-        if data?
-          g.title = data.title
-          g.addresses = data.addresses
-          g.symbol = data.symbol
-          g.commission = data.commission 
-          g.logo = data.logo 
-        setup()
-    )
-  else 
-    setup()
+  if user.title 
+    $('#title').html(user.title).show()
+
+  if user.logo
+    $('#logo').attr('src', user.logo).show()
+  else unless user.title
+    $('#logo').attr('src', '/img/bitcoin_coop.png').show()
+
+  $('#symbol').html(user.symbol)
+  $('#currency').html(user.symbol.slice(-3))
+  $('#received').hide()
+
+  # setInterval(keepSocketsAlive, 5000)
+  # fetchExchangeRate()
+  fakeExchangeRate()
 
   $('#amount').focus(->
     $('#received').hide()
     $(this).val('')
-  ).focus()
+  )
 
   $('form#calculator').submit((e) ->
     if isNumber($('#amount').val())
@@ -56,21 +49,22 @@ $(->
     e.preventDefault()
   )
 
-  $('.btn-danger').on('click', ->
+  $('body').on('click', '.btn-danger', ->
     $(this).closest('.btn-block').hide()
   )
 
-  $('.order').on('click', ->
+  $('body').on('click', '.order', ->
     $('.order').addClass('small')
     $(this).removeClass('small')
   )
 )
 
 getAddress = (-> 
+  addresses = ['1VAnbtCAnYccECnjaMCPnWwt81EHCVgNr','18DtqERJnnaBktezXfFXqYVSnCYWd6trZm']
   cc = 0
   ->
-    cc = (cc + 1) % g.addresses.length
-    g.addresses[cc]
+    cc = (cc + 1) % addresses.length
+    addresses[cc]
 )()
 
 createOrder = ->
@@ -91,6 +85,7 @@ createOrder = ->
   g.orders.push(order)
 
   div = $('.ordertemplate').clone()
+  div.attr('id', "order_#{order.id}")
   div.attr('class', 'order btn btn-block')
   $('#calculator').after(div)
 
@@ -115,38 +110,15 @@ createOrder = ->
     div.fadeIn()
 
 
-setup = ->
-  g.commission or= 0
-  g.symbol or= 'virtexCAD'
-
-  if g.title 
-    $('#title').html(g.title).show()
-
-  if g.logo
-    $('#logo').attr('src', g.logo).show()
-  else unless g.title
-    $('#logo').attr('src', '/img/bitcoin_coop.png').show()
-
-  symbol = g.symbol
-
-  $('#symbol').html(symbol)
-  $('#currency').html(g.symbol.slice(-3))
-  $('#received').hide()
-
-  # setInterval(keepSocketsAlive, 5000)
-  # fetchExchangeRate()
-  fakeExchangeRate()
-
 fakeExchangeRate = ->
-  unless g.setupComplete
-    finalize() 
   clear(EXCHANGE_FAIL)
   g.exchange = 420.00
   $('#exchange').val(g.exchange.toFixed(2))
+  finalize() 
 
 fetchExchangeRate = ->
   $.ajax(
-    url: "ticker?symbol=#{g.symbol}&type=ask&amount=1000",
+    url: "ticker?symbol=#{user.symbol}&type=ask&amount=1000",
     success: (exchange) -> 
       if exchange?
         clear(EXCHANGE_FAIL)
@@ -157,7 +129,7 @@ fetchExchangeRate = ->
       unless g.setupComplete
         finalize() 
 
-      g.exchange = exchange - exchange * g.commission * 0.01
+      g.exchange = exchange - exchange * user.commission * 0.01
       $('#exchange').val(g.exchange.toFixed(2))
     error: -> fail(EXCHANGE_FAIL)
   )

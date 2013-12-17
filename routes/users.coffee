@@ -29,26 +29,21 @@ module.exports = (sessions) ->
     )
 
   show: (req, res) ->
-    res.render('calculator/show', 
-      user: req.params.user, 
-      js: (-> global.js), 
-      css: (-> global.css) 
+    db.hgetall("user:"+req.params.user, (err, obj) ->
+      delete obj['password']
+      res.render('calculator/show', 
+        user: JSON.stringify(obj),
+        js: (-> global.js), 
+        css: (-> global.css) 
+      )
     )
 
   new: (req, res) ->
-    db.smembers('mts', (err, keys) ->
-       mts = []
-       for mt in keys
-          db.hgetall(mt, (err, it) ->
-            mts.push(it)
-            if keys.length==mts.length
-               res.render('users/new', 
-                  js: (-> global.js), 
-                  css: (-> global.css),
-                  mtypes: mts
-               )     
-          )
-    )
+    res.render('users/new', 
+      js: (-> global.js), 
+      css: (-> global.css),
+      user: 'yuri'
+    )     
 
   create: (req, res) ->
     userkey = "user:"+req.body.username
