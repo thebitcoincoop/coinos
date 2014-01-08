@@ -1,4 +1,4 @@
-db = require("../redis")
+db = require('./models')
 bcrypt = require('bcrypt')
 
 module.exports = (sessions) ->
@@ -31,25 +31,36 @@ module.exports = (sessions) ->
   show: (req, res) ->
     db.hgetall("user:"+req.params.user, (err, obj) ->
       delete obj['password']
-      res.render('calculator/show', 
-        user: JSON.stringify(obj),
+      obj.string = JSON.stringify(obj)
+      res.render('users/show', 
+        user: obj,
         js: (-> global.js), 
         css: (-> global.css) 
+      )
+    )
+
+  dashboard: (req, res) ->
+    db.hgetall("user:"+req.params.user, (err, obj) ->
+      delete obj['password']
+      res.render('users/dashboard', 
+        user: JSON.stringify(obj),
+        js: (-> global.js), 
+        css: (-> global.css),
+        layout: 'layout'
       )
     )
 
   new: (req, res) ->
     res.render('users/new', 
       js: (-> global.js), 
-      css: (-> global.css),
-      user: 'yuri'
+      css: (-> global.css)
     )     
 
   create: (req, res) ->
     userkey = "user:"+req.body.username
     db.hgetall(userkey, (err, obj) ->
       if obj
-        res.redirect(req.body.username)
+        res.redirect("/#{req.body.username}/edit")
       else
         bcrypt.hash(req.body.password, 12, (err, hash) ->
            db.sadd("users",userkey)
@@ -65,10 +76,14 @@ module.exports = (sessions) ->
     )
 
   edit: (req, res) ->
-    res.render('calculator/setup', 
-      user: req.params.user, 
-      js: (-> global.js), 
-      css: (-> global.css) 
+    db.hgetall("user:"+req.params.user, (err, obj) ->
+      delete obj['password']
+      res.render('users/edit', 
+        user: JSON.stringify(obj),
+        js: (-> global.js), 
+        css: (-> global.css),
+        layout: 'layout'
+      )
     )
 
   update: (req, res) ->

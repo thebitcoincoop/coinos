@@ -1,0 +1,21 @@
+<form id="setup" action="{{user.username}}" method="get">
+  <h1>Settings</h1>
+
+  <input type="hidden" id="username" name="username" value="{{user.username}}" />
+
+  <label for="logo">Logo URL:</label>
+  <input type="text" id="logo" name="logo" />
+
+  <label for="address">Bitcoin Receiving Address:</label>
+  <input type="text" id="address" name="address" />
+
+  <label for="symbol">Exchange Rate:</label>
+  <select id="symbol" name="symbol">
+  </select>
+
+  <label for="commission">Discount % (negative numbers allowed):</label>
+  <input type="text" id="commission" name="commission" value="0" />
+
+  <br />
+  <input class="btn" type="submit" value="Save" />
+</form>

@@ -5,14 +5,16 @@
 		<meta name="viewport" content="width=480, height=752, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
     <title>Bitcoin Payment Calculator</title>
     <link href="img/favicon.ico" rel="shortcut icon" />
-    <script type="text/javascript">var user = {{{user}}};</script>
+    <script type="text/javascript">var user = {{user.toString}};</script>
     {{#css}}calculator{{/css}}
     {{#js}}calculator{{/js}}
   </head>
   <body>
+  {{#user}}{{username}}{{/user}}
+  {{user.username}}
     <div class="container-fluid">
       <form id="calculator" style="display: none">
-        <input id="user" type="hidden" value="{{user}}" />
+        <input id="user" type="hidden" value="{{user.username}}" />
 
         <h1 id="title"></h1>
         <img id="logo" src="/img/bitcoin_coop.png" alt="Logo" />
@@ -27,6 +29,7 @@
 
         <br />
         <input type="submit" value="Request Payment" />
+        <a href="{{user.username}}/dashboard"><button type="button">Account Dashboard</button></a>
       </form>
 
       <div class="ordertemplate" style="display: none">

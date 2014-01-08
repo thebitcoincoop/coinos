@@ -10,9 +10,13 @@
   </head>
   <body>
     <div class="container-fluid">
-      <form action="login" method="post">
-        <h1>Login</h1>
+      <h1>Point of Sale</h1>
 
+      <p>Use this page to receive and track bitcoin payments</p>
+      <p>Accounts are free to register and we don't charge any transaction fees</p>
+      <p>Login with demo/demo to try it out</p>
+
+      <form action="login" method="post">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" value="{{user}}" />
 
@@ -22,6 +26,17 @@
         <br />
         <input type="submit" value="Login" />
       </form>
+      <a href="/register"><button class="btn-success" href="/register">Register</button></a>
+      <a href="/forgot-password"><button class="btn-danger" href="/register">Forgot Password?</button></a>
+
+      <h2>How It Works</h2>
+
+      <p>You specify a bitcoin address payments should be sent to</p>
+      <p>Our page allows you to create payment requests in your local currency</p>
+      <p>The amount is converted into bitcoins according to the exchange rate of your choosing</p> 
+      <p>Your customers scan a QR code to get your address and the amount in bitcoins</p>
+      <p>The page detects when the correct payment amount is received to your address and displays a notification</p>
+      <p>You can view a history of all payments received and the exchange rate used at the time of sale</p>
     </div>
   </body>
 </html> 

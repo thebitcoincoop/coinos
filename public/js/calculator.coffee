@@ -26,6 +26,7 @@ $(->
   else unless user.title
     $('#logo').attr('src', '/img/bitcoin_coop.png').show()
 
+  user.symbol ||= 'virtexCAD'
   $('#symbol').html(user.symbol)
   $('#currency').html(user.symbol.slice(-3))
   $('#received').hide()
