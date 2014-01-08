@@ -1,4 +1,4 @@
-db = require('./models')
+db = require('../models')
 bcrypt = require('bcrypt')
 
 module.exports = (sessions) ->
