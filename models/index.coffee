@@ -2,7 +2,7 @@ fs = require("fs")
 path = require("path")
 Sequelize = require("sequelize")
 lodash = require("lodash")
-sequelize = new Sequelize("sequelize_test", "root", "MPJzfq97")
+sequelize = new Sequelize("sequelize_test", "root", "MPJzfq97", dialect: "postgres")
 db = {}
 fs.readdirSync(__dirname).filter((file) ->
   (file.indexOf(".") isnt 0) and (file isnt "index.coffee")

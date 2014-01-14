@@ -3,20 +3,14 @@ bcrypt = require('bcrypt')
 
 module.exports = (sessions) ->
   exists: (req, res) ->
-    db.hgetall("user:"+req.params.user, (err, obj) ->
+    db.User.find(where: username: req.params.user).complete((err, obj) ->
       if obj? then res.write('true') else res.write('false')
       res.end()
     )
   
   json: (req, res) ->
-    db.hgetall("user:"+req.params.user, (err, obj) ->
+    db.User.find(where: username: req.params.user).complete((err, obj) ->
       delete obj['password']
-      res.write(JSON.stringify(obj))
-      res.end()
-    )
-
-  index: (req, res) -> 
-    db.keys('*', (err, obj) ->
       res.write(JSON.stringify(obj))
       res.end()
     )
@@ -29,8 +23,9 @@ module.exports = (sessions) ->
     )
 
   show: (req, res) ->
-    db.hgetall("user:"+req.params.user, (err, obj) ->
+    db.User.find(where: username: req.params.user).complete((err, obj) ->
       delete obj['password']
+      console.log(obj)
       obj.string = JSON.stringify(obj)
       res.render('users/show', 
         user: obj,
@@ -40,10 +35,10 @@ module.exports = (sessions) ->
     )
 
   dashboard: (req, res) ->
-    db.hgetall("user:"+req.params.user, (err, obj) ->
-      delete obj['password']
+    db.User.find(where: username: req.params.user).complete((err, obj) ->
+      console.log(obj.values)
       res.render('users/dashboard', 
-        user: JSON.stringify(obj),
+        user: obj.values,
         js: (-> global.js), 
         css: (-> global.css),
         layout: 'layout'
@@ -58,17 +53,16 @@ module.exports = (sessions) ->
 
   create: (req, res) ->
     userkey = "user:"+req.body.username
-    db.hgetall(userkey, (err, obj) ->
+    db.User.find(where: username: req.params.user).complete((err, obj) ->
       if obj
         res.redirect("/#{req.body.username}/edit")
       else
         bcrypt.hash(req.body.password, 12, (err, hash) ->
-           db.sadd("users",userkey)
-           db.hmset(userkey,
+           db.User.build(
              username: req.body.username,
              password: hash,
              email: req.body.email
-            , ->
+            ).save().complete(->
               req.headers['referer'] = "/#{req.body.username}/edit"
               sessions.create(req, res)
            )
@@ -76,7 +70,7 @@ module.exports = (sessions) ->
     )
 
   edit: (req, res) ->
-    db.hgetall("user:"+req.params.user, (err, obj) ->
+    db.User.find(where: username: req.params.user).complete((err, obj) ->
       delete obj['password']
       res.render('users/edit', 
         user: JSON.stringify(obj),
