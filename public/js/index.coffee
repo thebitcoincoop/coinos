@@ -3,7 +3,13 @@
 
 g = exports ? this
 
+  
+
 $(->
+  unless Boolean(window.chrome)
+    document.write('Must use chrome')
+    return
+
   fetchExchangeRate('ask') 
   fetchExchangeRate('bid') 
 

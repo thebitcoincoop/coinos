@@ -14,6 +14,10 @@ ADDRESS_FAIL = "Invalid address"
 g = exports ? this
 
 $(->
+  unless Boolean(window.chrome)
+    document.write('Must use chrome')
+    return
+
   g.errors = []
   g.orders = []
   g.unit = 'mBTC'
