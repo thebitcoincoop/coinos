@@ -42,8 +42,7 @@
             });
           }));
         });
-        pool.connect();
-        pool.startSync();
+        pool.connect().then(function () { pool.startSync(); });
         pool.on('error', function(err) {
           return console.log(err);
         });
