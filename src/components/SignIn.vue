@@ -1,7 +1,6 @@
 <template lang="pug">
 div
   #main-logo
-  // p.alert.alert-danger Invalid username or password, please try again.
   form.form-signin(action='login', method='post')
     input.form-control(name='username', type='text', placeholder='Username', value='user', required='', autofocus='')
     br
@@ -11,7 +10,7 @@ div
     |  
     button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
   p
-    button#register.btn.btn-lg.btn-secondary.btn-block Register
+    a.btn.btn-lg.btn-secondary.btn-block(href='/signup') Register
   p
     a(href='http://bitcoincoop.org/coinos') What is this?
 </template>
@@ -22,23 +21,27 @@ export default {
 }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
   #main-logo
-      margin-bottom 15px
+    margin-bottom 15px
 
   .form-signin
-      margin-bottom 10px
-      .form-control
-          height auto
-          -webkit-box-sizing border-box
-          -moz-box-sizing border-box
-          box-sizing border-box
-          padding 10px
-          font-size 16px
+    margin-bottom 10px
+    .form-control
+      height auto
+      -webkit-box-sizing border-box
+      -moz-box-sizing border-box
+      box-sizing border-box
+      padding 10px
+      font-size 16px
 
   .notice
-      border 1px solid gray
-      background #eee
-      padding 10px
-      margin-bottom 15px
+    border 1px solid gray
+    background #eee
+    padding 10px
+    margin-bottom 15px
+
+  .btn
+    background #ccc
+    display block
 </style>

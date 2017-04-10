@@ -1,39 +1,48 @@
 <template lang="pug">
 div
   #main-logo
-  form#register(action='/users', method='post')
+  form(v-on:submit='submit')
     .form-group
       label(for='username') Username:
-      |  
-      input#username.form-control(type='text', name='username')
+      input.form-control(v-model='username')
     .form-group
       label(for='email') Email:
-      |  
-      input#email.form-control(type='text', name='email')
+      input.form-control(v-model='email')
     .form-group
       label(for='password') Passphrase:
-      |  
-      input#password.form-control(type='password', name='password')
-      #messages
+      input.form-control(v-model='password', type='password')
     .form-group
       label(for='confirm') Confirm Passphrase:
-      |  
-      input#confirm.form-control(type='password', name='confirm')
-    |  
-    input#commission(name='commission', type='hidden', value='0')
-    |  
-    input#unit(name='unit', type='hidden', value='BTC')
-    |  
-    input#pubkey(name='pubkey', type='hidden')
-    |  
-    input#privkey(name='privkey', type='hidden')
-    |  
+      input.form-control(v-model='passconfirm', type='password')
+    input(v-model='commission', type='hidden', value='0')
+    input(v-model='unit', type='hidden')
+    input(v-model='pubkey', type='hidden')
+    input(v-model='privkey', type='hidden')
     input.btn.btn-primary(type='submit', value='Register')
-  #qr
 </template>
 
 <script>
 export default {
-  name: 'SignUp'
+  name: 'SignUp',
+  data () {
+    return {
+      username: '',
+      email: 'asoltys@gmail.com',
+      password: '',
+      passconfirm: '',
+      unit: 'BTC',
+      commission: '',
+      pubkey: '',
+      privkey: ''
+    }
+  },
+  methods: {
+    submit (e) {
+      e.preventDefault()
+      this.$http.post('/api/users', this.$data).then(response => {
+        console.log(response)
+      })
+    }
+  }
 }
 </script>
