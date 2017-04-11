@@ -1,6 +1,8 @@
 <template lang="pug">
 div
   #main-logo
+  .alert.alert-danger(v-if='error')
+    | {{error}}
   form(v-on:submit='submit')
     .form-group
       label(for='username') Username:
@@ -33,14 +35,17 @@ export default {
       unit: 'BTC',
       commission: '',
       pubkey: '',
-      privkey: ''
+      privkey: '',
+      error: ''
     }
   },
   methods: {
     submit (e) {
       e.preventDefault()
       this.$http.post('/api/users', this.$data).then(response => {
-        console.log(response)
+        this.$router.go(this.username)
+      }).catch(e => {
+        this.error = e.body.message
       })
     }
   }
