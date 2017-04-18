@@ -37,7 +37,7 @@ export default {
       let user = this.$data.user
       e.preventDefault()
       axios.post('/api/login', user).then((res) => {
-        this.$router.push('/' + user)
+        this.$router.push(user.username)
       }).catch(() => {
         this.message = 'Login failed'
       })
