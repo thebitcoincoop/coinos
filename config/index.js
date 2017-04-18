@@ -27,6 +27,21 @@ module.exports = {
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
+        },
+        onProxyReq(proxyReq, req, res) {
+          if ( req.method == "POST" && req.body ) {
+            if ( req.body ) delete req.body
+            let body = new Object()
+
+            body = Object.keys(body).map(function(key) {
+                return encodeURIComponent(key) + '=' + encodeURIComponent(body[key])
+            }).join('&')
+
+            proxyReq.setHeader( 'content-type', 'application/x-www-form-urlencoded' )
+            proxyReq.setHeader( 'content-length', body.length )
+            proxyReq.write(body)
+            proxyReq.end()
+          }
         }
       }
     },

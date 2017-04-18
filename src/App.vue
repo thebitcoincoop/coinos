@@ -183,18 +183,6 @@ export default {
           font-weight bold
           text-align right
 
-  #main-logo
-      background-image url('/static/img/coinos_logo.png')
-      width 300px
-      height 80px
-      margin-top 10px
-      margin-bottom 10px
-
-  .svg
-      #main-logo
-          background-image url('/static/img/coinos_logo.svg') !important
-          background-size 300px 80px
-
   @page
       margin 0
 </style>

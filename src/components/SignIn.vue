@@ -1,13 +1,11 @@
 <template lang="pug">
 div
-  #main-logo
-  form.form-signin(action='login', method='post')
-    input.form-control(name='username', type='text', placeholder='Username', value='user', required='', autofocus='')
+  .logo
+  form(@submit='submit')
+    input.form-control(v-model='username', type='text', placeholder='Username', autofocus)
     br
-    |  
-    input.form-control(name='password', type='password', placeholder='Password', required='')
+    input.form-control(v-model='password', type='password', placeholder='Password', required)
     br
-    |  
     button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
   p
     a.btn.btn-lg.btn-secondary.btn-block(href='/signup') Register
@@ -16,16 +14,36 @@ div
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
-  name: 'home'
+  name: 'home',
+  data () {
+    return {
+      username: 'yy',
+      password: 'pw'
+    }
+  },
+  methods: {
+    submit (e) {
+      e.preventDefault()
+      axios.post('/api/login', this.$data).then((res) => {
+        console.log(res)
+      })
+    }
+  }
 }
 </script>
 
 <style lang="stylus" scoped>
-  #main-logo
-    margin-bottom 15px
+  .logo
+    background-image url('/static/img/coinos_logo.png')
+    width 300px
+    height 80px
+    margin-top 10px
+    margin-bottom 10px
 
-  .form-signin
+  form
     margin-bottom 10px
     .form-control
       height auto
