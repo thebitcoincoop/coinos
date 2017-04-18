@@ -7,14 +7,17 @@ import SignUp from './components/SignUp'
 import Sales from './components/Sales'
 import Account from './components/Account'
 import Settings from './components/Settings'
+import About from './components/About'
+import PaymentRequest from './components/PaymentRequest'
 
 const routes = [
   { path: '/', component: SignIn },
-  { path: '/signin', component: SignIn },
-  { path: '/signup', component: SignUp },
+  { path: '/register', component: SignUp },
   { path: '/sales', component: Sales },
   { path: '/account', component: Account },
-  { path: '/settings', component: Settings }
+  { path: '/settings', component: Settings },
+  { path: '/about', component: About },
+  { path: '/:user', component: PaymentRequest }
 ]
 
 const router = new VueRouter({

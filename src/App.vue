@@ -85,22 +85,6 @@ export default {
       width 100%
       margin-bottom 2px
 
-  @media (max-width: 360px)
-      .tippad
-          .btn
-              width 4.3em
-      .numpad
-          .btn
-              width 5.7em
-      .rates
-          width 100%
-          text-align left
-      #address
-          font-size 16px
-
-  .numpad,
-    .tippad,
-    .rates,
 
   #payment
       h2
@@ -144,39 +128,6 @@ export default {
   .form-group span,
   .form-group label
       color #999
-
-  div#calculator
-      #amount
-          width 5em
-      #received
-          font-size 16px
-          width 100%
-      strong#total
-          font-size 30px
-      #address
-          padding-top 10px
-          a
-              color #fff
-              text-decoration none
-      #title
-          display none
-          a
-              color #000
-              text-decoration none
-      #logo
-          display none
-          padding 10px 0
-          margin-bottom 10px
-          max-height 225px
-          width 100%
-      #error
-          margin-top 10px
-      #qr
-          padding-bottom 10px
-          margin-left 20px
-      .numpad
-          .btn-primary
-              background #abc
 
   td
       &.total
