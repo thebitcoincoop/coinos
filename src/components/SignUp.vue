@@ -24,30 +24,41 @@ div
 </template>
 
 <script>
-export default {
-  name: 'SignUp',
-  data () {
-    return {
-      username: '',
-      email: 'asoltys@gmail.com',
-      password: '',
-      passconfirm: '',
-      unit: 'BTC',
-      commission: '',
-      pubkey: '',
-      privkey: '',
-      error: ''
-    }
-  },
-  methods: {
-    submit (e) {
-      e.preventDefault()
-      this.$http.post('/api/users', this.$data).then(response => {
-        this.$router.go(this.username)
-      }).catch(e => {
-        this.error = e.body.message
-      })
+  import bip39 from 'bip39'
+  import bitcoin from 'bitcoinjs-lib'
+  import AES from 'crypto-js/aes'
+
+  export default {
+    name: 'SignUp',
+    data () {
+      return {
+        username: '',
+        email: 'asoltys@gmail.com',
+        password: '',
+        passconfirm: '',
+        unit: 'BTC',
+        commission: '',
+        pubkey: '',
+        privkey: '',
+        error: ''
+      }
+    },
+    methods: {
+      async submit (e) {
+        e.preventDefault()
+        try {
+          await this.$http.post('/api/users', this.$data)
+          this.$router.go(this.username)
+        } catch (e) {
+          this.error = e.body.message
+        }
+      }
+    },
+    mounted () {
+      let mnemonic = bip39.generateMnemonic()
+      let key = bitcoin.HDNode.fromSeedBuffer(bip39.mnemonicToSeed(mnemonic)).deriveHardened(44).deriveHardened(0)
+      this.pubkey = key.neutered().toBase58()
+      this.privkey = AES.encrypt(key.toString(), this.password).toString()
     }
   }
-}
 </script>
