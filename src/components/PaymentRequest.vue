@@ -2,56 +2,53 @@
   .payment-request
     h1(v-if='user.title') {{user.title}}
     img(v-if='user.logo')
-    numpad(:currency='user.currency', :amount='amount', @update='amount => this.amount = amount')
-    tippad(:amount='amount')
-    .rates.tablet
-      h2
-        small Exchange rate
-        span.exchange {{user.exchange}}
-        span.label.label-default.symbol {{user.symbol}}
-        span.label.label-success.commission {{user.commission}}
-    button#slide.btn.btn-primary
-      i.fa.fa-lg.fa-sort-up
+    numpad(:currency='user.currency', :amount='amount', @update='a => amount = a')
+    tippad(:amount='amount', @update='t => tip = t')
+    rates(:user='user', @update='r => rate = r')
     #payment
       h2
         small Please send 
         span {{total}} 
         small {{user.unit}}
-      #qr
+      canvas#qr
       h2
-        span#address.label.label-success {{user.address}}
-    button#received.btn.btn-success(type='button') Payment Received. Thank you!
+        span#address.label.label-success {{address}}
+    button#received.btn.btn-success Payment Received. Thank you!
     audio#success(src='/static/success.wav', hidden='true', enablejavascript='true')
-    pre {{amount}}
-    pre {{user}}
-    pre {{exchange}}
 </template>
 
 <script>
 import axios from 'axios'
+import qr from 'qrcode'
+import bitcoin from 'bitcoinjs-lib'
+
 import numpad from './NumPad'
 import tippad from './TipPad'
+import rates from './Rates'
 
 export default {
-  name: 'PaymentRequest',
-  components: {
-    numpad: numpad,
-    tippad: tippad
-  },
+  components: { numpad, tippad, rates },
   data () {
     return {
-      user: { unit: 'BTC' },
+      user: {},
       message: '',
       about: '',
       amount: 0,
       tip: 0,
-      total: 0,
-      exchange: 0
+      rate: 0,
+      address: ''
     }
   },
   computed: {
     total () {
-      this.amount * this.user.exchange
+      if (!this.address) return 0
+      let total = ((parseFloat(this.amount) / parseFloat(this.rate)) + parseFloat(this.tip)).toFixed(8)
+      let canvas = document.getElementById('qr')
+
+      qr.toCanvas(canvas, `bitcoin:${this.address}?amount=${total}`, e => { if (e) console.log(e) })
+      canvas.style.height = 300
+      canvas.style.width = 300
+      return total
     }
   },
   methods: {
@@ -65,12 +62,17 @@ export default {
       })
     }
   },
-  async mounted () {
+  mounted () {
     axios('/api/yy.json').then(res => {
       this.user = JSON.parse(res.data)
-      axios('https://apiv2.bitcoinaverage.com/exchanges/quadrigacx').then(res => {
-        this.exchange = res.data.symbols.BTCCAD.ask
-      })
+      try {
+        bitcoin.address.fromBase58Check(this.user.pubkey)
+        this.address = this.user.pubkey
+      } catch (e) {
+        let master = bitcoin.HDNode.fromBase58(this.user.pubkey)
+        let child = master.derive(0).derive(this.user.index)
+        this.address = child.getAddress().toString()
+      }
     })
   }
 }
@@ -127,5 +129,4 @@ export default {
     h2
       margin-bottom 2px
       margin-top 10px
-
 </style>

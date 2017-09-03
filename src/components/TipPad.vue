@@ -2,14 +2,14 @@
 .tippad.tablet
   h2
     small + 
-    span.tip {{total}}
-  button.active.btn.btn-lg.btn-default(type='button', @click='tip = 0') No Tip
+    span.tip {{tip}}
+  button.btn.btn-lg.btn-default(:class='{ active: percent == 0 }', type='button', @click='percent = 0') No Tip
   br
-  button.btn.btn-lg.btn-default(type='button', @click='tip = 10') +10%
+  button.btn.btn-lg.btn-default(:class='{ active: percent == 10 }', type='button', @click='percent = 10') +10%
   br
-  button.btn.btn-lg.btn-default(type='button', @click='tip = 15') +15%
+  button.btn.btn-lg.btn-default(:class='{ active: percent == 15 }', type='button', @click='percent = 15') +15%
   br
-  button.btn.btn-lg.btn-default(type='button', @click='tip = 20') +20%
+  button.btn.btn-lg.btn-default(:class='{ active: percent == 20 }', type='button', @click='percent = 20') +20%
 </template>
 
 <script>
@@ -17,13 +17,14 @@ export default {
   props: ['amount'],
   data () {
     return {
-      tips: [0, 10, 15, 20],
-      tip: 0
+      percent: 0
     }
   },
   computed: {
-    total () {
-      return (this.tip * this.amount * 0.01).toFixed(2)
+    tip () {
+      let tip = (this.percent * this.amount * 0.01).toFixed(2)
+      this.$emit('update', tip)
+      return tip
     }
   }
 }
