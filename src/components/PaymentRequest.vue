@@ -4,7 +4,12 @@
     img(v-if='user.logo')
     numpad(:currency='user.currency', :amount='amount', @update='amount => this.amount = amount')
     tippad(:amount='amount')
-    rates
+    .rates.tablet
+      h2
+        small Exchange rate
+        span.exchange {{user.exchange}}
+        span.label.label-default.symbol {{user.symbol}}
+        span.label.label-success.commission {{user.commission}}
     button#slide.btn.btn-primary
       i.fa.fa-lg.fa-sort-up
     #payment
@@ -18,20 +23,20 @@
     button#received.btn.btn-success(type='button') Payment Received. Thank you!
     audio#success(src='/static/success.wav', hidden='true', enablejavascript='true')
     pre {{amount}}
+    pre {{user}}
+    pre {{exchange}}
 </template>
 
 <script>
 import axios from 'axios'
 import numpad from './NumPad'
 import tippad from './TipPad'
-import rates from './Rates'
 
 export default {
   name: 'PaymentRequest',
   components: {
     numpad: numpad,
-    tippad: tippad,
-    rates: rates
+    tippad: tippad
   },
   data () {
     return {
@@ -40,7 +45,8 @@ export default {
       about: '',
       amount: 0,
       tip: 0,
-      total: 0
+      total: 0,
+      exchange: 0
     }
   },
   computed: {
@@ -59,9 +65,12 @@ export default {
       })
     }
   },
-  mounted () {
-    axios('/api/yy.json').then((res) => {
+  async mounted () {
+    axios('/api/yy.json').then(res => {
       this.user = JSON.parse(res.data)
+      axios('https://apiv2.bitcoinaverage.com/exchanges/quadrigacx').then(res => {
+        this.exchange = res.data.symbols.BTCCAD.ask
+      })
     })
   }
 }
