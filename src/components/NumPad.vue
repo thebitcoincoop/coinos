@@ -22,35 +22,28 @@
 
 <script>
 export default {
-  name: 'PaymentRequest',
-  props: ['currency'],
-  data () {
-    return {
-      amount: '0.0'
-    }
-  },
+  props: ['currency', 'amount'],
   methods: {
     update (e) {
+      let amount = this.amount
       let m = e.target.innerHTML
-      if (m === 'C') {
-        this.amount = (0).toFixed(2)
-        return
-      }
+
       if (m === '&lt;') {
-        console.log('yatta')
-        this.amount = (Math.floor(100 * (parseFloat(this.amount) / 10)) / 100).toFixed(2)
-        return
-      }
-      if (this.amount > 10000000) {
-        return
-      }
-      if (m === '00') {
-        this.amount = 100 * this.amount
-      } else {
-        this.amount = 10 * this.amount + parseFloat(m) / 100
+        amount = (Math.floor(100 * (parseFloat(amount) / 10)) / 100)
+      } else if (amount < 10000000) {
+        if (m === '00') {
+          amount = 100 * amount
+        } else {
+          amount = 10 * amount + parseFloat(m) / 100
+        }
       }
 
-      this.amount = this.amount.toFixed(2)
+      if (m === 'C') {
+        amount = 0
+      }
+
+      amount = amount.toFixed(2)
+      this.$emit('update', amount)
     }
   },
   mounted () {}

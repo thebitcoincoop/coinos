@@ -2,22 +2,22 @@
   .payment-request
     h1(v-if='user.title') {{user.title}}
     img(v-if='user.logo')
-    #controls
-      numpad(:currency='user.currency')
-      tippad
-      rates
+    numpad(:currency='user.currency', :amount='amount', @update='amount => this.amount = amount')
+    tippad(:amount='amount')
+    rates
     button#slide.btn.btn-primary
       i.fa.fa-lg.fa-sort-up
-    #payment(style='margin-top: -10px')
+    #payment
       h2
-        small Please send
-        span#total 0.0
-        small.unit {{user.unit}}
+        small Please send 
+        span {{total}} 
+        small {{user.unit}}
       #qr
       h2
         span#address.label.label-success {{user.address}}
     button#received.btn.btn-success(type='button') Payment Received. Thank you!
     audio#success(src='/static/success.wav', hidden='true', enablejavascript='true')
+    pre {{amount}}
 </template>
 
 <script>
@@ -35,9 +35,17 @@ export default {
   },
   data () {
     return {
-      user: {},
+      user: { unit: 'BTC' },
       message: '',
-      about: ''
+      about: '',
+      amount: 0,
+      tip: 0,
+      total: 0
+    }
+  },
+  computed: {
+    total () {
+      this.amount * this.user.exchange
     }
   },
   methods: {
@@ -109,5 +117,6 @@ export default {
   #payment
     h2
       margin-bottom 2px
+      margin-top 10px
 
 </style>
