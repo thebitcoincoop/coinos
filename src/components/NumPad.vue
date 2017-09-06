@@ -3,7 +3,7 @@
     h2
       span.amount {{ amount }}
       small.currency {{ currency }}
-    button.btn.btn-lg.btn-default(v-for='i in buttons' @click='update') {{i}}
+    button.btn.btn-lg.btn-default(v-for='i in buttons' @click='update', :id='id(i)') {{i}}
     br(v-for='i in buttons' v-if='i + 1 % 3 == 0')
 </template>
 
@@ -12,10 +12,25 @@ export default {
   props: ['currency', 'amount'],
   data () {
     return {
-      buttons: [...Array(9).keys(), '<', '0', 'C']
+      buttons: [...Array(9).keys(), '<', '0', 'C'],
+      codes: Array.from(Array(10), (_, x) => x + 48)
     }
   },
   methods: {
+    id (i) {
+      let prefix = 'button-'
+      if (i === '<') return prefix + 'lt'
+      return prefix + i
+    },
+    keyup (e) {
+      let key = e.keyCode
+      if (key > 56) key -= 48
+      let id = this.codes.indexOf(key)
+      if (key === 8) id = 'lt'
+      if (key === 46 || key === 13) id = 'C'
+      if (id < 0) return
+      document.querySelector(`#button-${id}`).click()
+    },
     update (e) {
       let amount = parseFloat(this.amount)
       let m = e.target.innerHTML
@@ -38,8 +53,11 @@ export default {
       this.$emit('update', amount)
     }
   },
-  mounted () {
-    console.log([...Array(9).keys()])
+  created: function () {
+    document.addEventListener('keyup', this.keyup)
+  },
+  destroyed: function () {
+    document.removeEventListener('keyup', this.keyup)
   }
 }
 </script>
