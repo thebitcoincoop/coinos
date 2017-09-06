@@ -13,7 +13,7 @@
       canvas#qr
       h2
         span#address.label.label-success {{address}}
-    button#received.btn.btn-success Payment Received. Thank you!
+    button#received.btn.btn-success(v-if='received') Payment Received. Thank you!
     audio#success(src='/static/success.wav', hidden='true', enablejavascript='true')
 </template>
 
@@ -36,7 +36,8 @@ export default {
       amount: 0,
       tip: 0,
       rate: 0,
-      address: ''
+      address: '',
+      received: false
     }
   },
   computed: {

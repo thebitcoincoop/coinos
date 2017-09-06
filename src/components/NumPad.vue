@@ -3,29 +3,21 @@
     h2
       span.amount {{ amount }}
       small.currency {{ currency }}
-    button.btn.btn-lg.btn-default(@click='update') 1
-    button.btn.btn-lg.btn-default(@click='update') 2
-    button.btn.btn-lg.btn-default(@click='update') 3
-    br
-    button.btn.btn-lg.btn-default(@click='update') 4
-    button.btn.btn-lg.btn-default(@click='update') 5
-    button.btn.btn-lg.btn-default(@click='update') 6
-    br
-    button.btn.btn-lg.btn-default(@click='update') 7
-    button.btn.btn-lg.btn-default(@click='update') 8
-    button.btn.btn-lg.btn-default(@click='update') 9
-    br
-    button.btn.btn-lg.btn-default(@click='update') C
-    button.btn.btn-lg.btn-default(@click='update') 0
-    button.btn.btn-lg.btn-default(@click='update') <
+    button.btn.btn-lg.btn-default(v-for='i in buttons' @click='update') {{i}}
+    br(v-for='i in buttons' v-if='i + 1 % 3 == 0')
 </template>
 
 <script>
 export default {
   props: ['currency', 'amount'],
+  data () {
+    return {
+      buttons: [...Array(9).keys(), '<', '0', 'C']
+    }
+  },
   methods: {
     update (e) {
-      let amount = this.amount
+      let amount = parseFloat(this.amount)
       let m = e.target.innerHTML
 
       if (m === '&lt;') {
@@ -46,6 +38,8 @@ export default {
       this.$emit('update', amount)
     }
   },
-  mounted () {}
+  mounted () {
+    console.log([...Array(9).keys()])
+  }
 }
 </script>
