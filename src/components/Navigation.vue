@@ -2,32 +2,33 @@
 nav.navbar(role='navigation')
   button.btn.btn-primary.navbar-toggle(type='button', data-toggle='collapse', data-target='#nav')
     span.pull-right.glyphicon.glyphicon-list
-    span#connection.pull-right.glyphicon.glyphicon-exclamation-sign
+    |  
+    span.pull-right.glyphicon.glyphicon-exclamation-sign
   #nav.collapse.navbar-collapse.no-transition
     .navbar
       ul.nav.navbar-nav
         li
-          a(href='/{{user}}')
+          router-link(to='home')
             span.glyphicon.glyphicon-home
             |  Home
         li
-          a(href='/{{user}}/report')
+          router-link(to='sales')
             span.glyphicon.glyphicon-list-alt
             |  Sales
         li
-          a(href='/{{user}}/wallet')
+          router-link(to='wallet')
             span.fa.fa-bank
             |  Wallet
         li
-          a(href='/{{user}}/profile')
+          router-link(to='account')
             span.glyphicon.glyphicon-user
             |  Account
         li
-          a(href='/{{user}}/edit')
+          router-link(to='settings')
             span.glyphicon.glyphicon-cog
             |  Settings
         li
-          a(href='/logout')
+          router-link(to='logout')
             span.glyphicon.glyphicon-off
             |  Logout
 </template>

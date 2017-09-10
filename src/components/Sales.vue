@@ -59,7 +59,11 @@
 
 <script>
 export default {
-  name: 'Sales'
+  data () {
+    return {
+      currency: 'CAD'
+    }
+  }
 }
   /*
   (function() {

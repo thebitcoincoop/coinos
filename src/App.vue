@@ -1,15 +1,14 @@
 <template lang="pug">
+div
+  navigation
   router-view
 </template>
 
 <script>
-import SignIn from './components/SignIn'
+import navigation from './components/Navigation'
 
 export default {
-  name: 'App',
-  components: {
-    SignIn
-  }
+  components: { navigation }
 }
 </script>
 
