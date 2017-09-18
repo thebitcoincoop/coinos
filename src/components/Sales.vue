@@ -58,7 +58,7 @@ export default {
       subtotal: 0,
       total: 0,
       tips: 0,
-      from: moment().subtract('days', 7),
+      from: moment().subtract(7, 'days'),
       to: moment(),
       transactions: []
     }

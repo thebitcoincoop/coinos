@@ -2,6 +2,7 @@
 div
   .logo
   .alert.alert-danger(v-if='message') {{message}}
+  .alert.alert-success(v-if='logout') You've been logged out
   form(@submit='submit')
       input.form-control(v-model='user.username', type='text', placeholder='Username', autofocus)
       input.form-control(v-model='user.password', type='password', placeholder='Password', required)
@@ -18,7 +19,7 @@ import axios from 'axios'
 import about from './About'
 
 export default {
-  name: 'home',
+  props: ['logout'],
   data () {
     return {
       user: {

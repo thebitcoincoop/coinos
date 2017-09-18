@@ -1,7 +1,8 @@
 <template lang="pug">
 div
   navigation
-  router-view
+  transition(name='fade')
+    router-view
 </template>
 
 <script>
@@ -135,4 +136,10 @@ export default {
 
   @page
       margin 0
+
+  .fade-enter-active
+    transition: opacity 1s
+
+  .fade-enter
+    opacity: 0
 </style>

@@ -48,7 +48,7 @@ export default {
       if (!this.address) return 0
       let total = ((f(this.amount) / f(this.rate)) + f(this.tip)).toFixed(8)
 
-      let t = this.timeout ? 50 : 0
+      let time = this.timeout ? 50 : 0
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
         let canvas = document.getElementById('qr')
@@ -56,30 +56,16 @@ export default {
         canvas.style.height = 300
         canvas.style.width = 300
         return total
-      }, t)
+      }, time)
     }
   },
   methods: {
-    submit (e) {
-      let user = this.$data.user
-      e.preventDefault()
-      axios.post('/api/login', user).then((res) => {
-        this.$router.push('/' + user)
-      }).catch(() => {
-        this.message = 'Login failed'
-      })
-    },
     loadWallet () {
       axios('/api/yy.json').then(res => {
         this.user = JSON.parse(res.data)
-        try {
-          bitcoin.address.fromBase58Check(this.user.pubkey)
-          this.address = this.user.pubkey
-        } catch (e) {
-          let master = bitcoin.HDNode.fromBase58(this.user.pubkey)
-          let child = master.derive(0).derive(this.user.index)
-          this.address = child.getAddress().toString()
-        }
+        let master = bitcoin.HDNode.fromBase58(this.user.pubkey)
+        let child = master.derive(0).derive(this.user.index)
+        this.address = child.getAddress().toString()
       })
     }
   },
