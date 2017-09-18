@@ -3,9 +3,9 @@ div
   .logo
   .alert.alert-danger(v-if='message') {{message}}
   form(@submit='submit')
-    input.form-control(v-model='user.username', type='text', placeholder='Username', autofocus)
-    input.form-control(v-model='user.password', type='password', placeholder='Password', required)
-    button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
+      input.form-control(v-model='user.username', type='text', placeholder='Username', autofocus)
+      input.form-control(v-model='user.password', type='password', placeholder='Password', required)
+      button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
   p
     router-link.btn.btn-lg.btn-secondary.btn-block(to='/register') Register
   about(v-if='about')
@@ -57,21 +57,15 @@ export default {
   form
     .form-control
       height auto
-      -webkit-box-sizing border-box
-      -moz-box-sizing border-box
-      box-sizing border-box
       padding 10px
       font-size 16px
       margin-bottom 10px
 
-  .notice
-    border 1px solid gray
-    background #eee
-    padding 10px
-    margin-bottom 15px
-
   .btn
     display block
+
+  .btn-primary
+    margin-top 40px
 
   .btn-secondary
     background #333

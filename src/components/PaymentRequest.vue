@@ -19,12 +19,14 @@
 
 <script>
 import axios from 'axios'
-import qr from 'qrcode'
 import bitcoin from 'bitcoinjs-lib'
+import qr from 'qrcode'
 
 import numpad from './NumPad'
 import tippad from './TipPad'
 import rates from './Rates'
+
+const f = parseFloat
 
 export default {
   components: { numpad, tippad, rates },
@@ -37,19 +39,24 @@ export default {
       tip: 0,
       rate: 0,
       address: '',
-      received: false
+      received: false,
+      timeout: null
     }
   },
   computed: {
     total () {
       if (!this.address) return 0
-      let total = ((parseFloat(this.amount) / parseFloat(this.rate)) + parseFloat(this.tip)).toFixed(8)
-      let canvas = document.getElementById('qr')
+      let total = ((f(this.amount) / f(this.rate)) + f(this.tip)).toFixed(8)
 
-      qr.toCanvas(canvas, `bitcoin:${this.address}?amount=${total}`, e => { if (e) console.log(e) })
-      canvas.style.height = 300
-      canvas.style.width = 300
-      return total
+      let t = this.timeout ? 50 : 0
+      clearTimeout(this.timeout)
+      this.timeout = setTimeout(() => {
+        let canvas = document.getElementById('qr')
+        qr.toCanvas(canvas, `bitcoin:${this.address}?amount=${total}`, e => { if (e) console.log(e) })
+        canvas.style.height = 300
+        canvas.style.width = 300
+        return total
+      }, t)
     }
   },
   methods: {
@@ -61,25 +68,28 @@ export default {
       }).catch(() => {
         this.message = 'Login failed'
       })
+    },
+    loadWallet () {
+      axios('/api/yy.json').then(res => {
+        this.user = JSON.parse(res.data)
+        try {
+          bitcoin.address.fromBase58Check(this.user.pubkey)
+          this.address = this.user.pubkey
+        } catch (e) {
+          let master = bitcoin.HDNode.fromBase58(this.user.pubkey)
+          let child = master.derive(0).derive(this.user.index)
+          this.address = child.getAddress().toString()
+        }
+      })
     }
   },
   mounted () {
-    axios('/api/yy.json').then(res => {
-      this.user = JSON.parse(res.data)
-      try {
-        bitcoin.address.fromBase58Check(this.user.pubkey)
-        this.address = this.user.pubkey
-      } catch (e) {
-        let master = bitcoin.HDNode.fromBase58(this.user.pubkey)
-        let child = master.derive(0).derive(this.user.index)
-        this.address = child.getAddress().toString()
-      }
-    })
+    this.loadWallet()
   }
 }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
   #amount
     width 5em
   #received

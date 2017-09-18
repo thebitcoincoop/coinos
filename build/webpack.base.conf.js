@@ -11,6 +11,7 @@ var cssSourceMapProd = (env === 'production' && config.build.productionSourceMap
 var useCssSourceMap = cssSourceMapDev || cssSourceMapProd
 
 module.exports = {
+  target: 'web',
   entry: {
     app: './src/main.js'
   },
