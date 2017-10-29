@@ -1,6 +1,6 @@
 <template lang="pug">
   .payment-request
-    h1(v-if='user.title') {{user.title}}
+    h4(v-if='user.title') {{user.title}}
     img(v-if='user.logo')
     numpad(:currency='user.currency', :amount='amount', @update='a => amount = a')
     tippad(:amount='amount', @update='t => tip = t')

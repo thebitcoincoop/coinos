@@ -49,7 +49,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import moment from 'moment'
 export default {
   data () {
@@ -72,22 +71,7 @@ export default {
     }
   },
   mounted () {
-    axios.get('/api/yy/transactions', d => { this.transactions = d.transactions })
+    this.axios.get('/api/yy/transactions', d => { this.transactions = d.transactions })
   }
 }
 </script>
-
-<style lang="stylus">
-input
-  position relative 
-  top 25px
-  height 0px
-  width 0px
-  border 0px
-
-.controls 
-  margin-bottom 15px
-
-table
-  cursor pointer
-</style>

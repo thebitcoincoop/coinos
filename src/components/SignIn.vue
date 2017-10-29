@@ -1,23 +1,17 @@
 <template lang="pug">
-div
-  .logo
-  .alert.alert-danger(v-if='message') {{message}}
-  .alert.alert-success(v-if='logout') You've been logged out
-  form(@submit='submit')
-      input.form-control(v-model='user.username', type='text', placeholder='Username', autofocus)
-      input.form-control(v-model='user.password', type='password', placeholder='Password', required)
-      button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
-  p
-    router-link.btn.btn-lg.btn-secondary.btn-block(to='/register') Register
-  about(v-if='about')
-  p(v-else)
-    a(@click='about = true') What is this?
+v-container
+  p.text-xs-center.py-5.logo
+
+  v-alert(color='error' v-if='message') {{message}}
+  v-alert(color='success' v-if='logout') You've been logged out
+  v-form(@submit='submit')
+    v-text-field(label="Username" v-model='user.username' autofocus)
+    v-text-field(label="Password" v-model='user.password' type='password')
+    v-btn(type='submit') Sign in
+    v-btn(@click='$router.push("/register")') Register
 </template>
 
 <script>
-import axios from 'axios'
-import about from './About'
-
 export default {
   props: ['logout'],
   data () {
@@ -26,18 +20,14 @@ export default {
         username: 'yy',
         password: 'pw'
       },
-      message: '',
-      about: ''
+      message: ''
     }
-  },
-  components: {
-    about: about
   },
   methods: {
     submit (e) {
       let user = this.$data.user
       e.preventDefault()
-      axios.post('/api/login', user).then((res) => {
+      this.axios.post('/api/login', user).then((res) => {
         this.$router.push(user.username)
       }).catch(() => {
         this.message = 'Login failed'
@@ -50,27 +40,4 @@ export default {
 <style lang="stylus" scoped>
   .logo
     background-image url('/static/img/coinos_logo.png')
-    width 300px
-    height 80px
-    margin-top 10px
-    margin-bottom 20px
-
-  form
-    .form-control
-      height auto
-      padding 10px
-      font-size 16px
-      margin-bottom 10px
-
-  .btn
-    display block
-
-  .btn-primary
-    margin-top 40px
-
-  .btn-secondary
-    background #333
-    color white
-    &:hover
-      background #222
 </style>
