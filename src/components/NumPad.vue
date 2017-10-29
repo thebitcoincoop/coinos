@@ -12,7 +12,7 @@ export default {
   props: ['currency', 'amount'],
   data () {
     return {
-      buttons: [...Array(9).keys(), '<', '0', 'C'],
+      buttons: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '<', '0', 'C'],
       codes: Array.from(Array(10), (_, x) => x + 48)
     }
   },
