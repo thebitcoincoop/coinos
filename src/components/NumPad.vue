@@ -1,10 +1,12 @@
 <template lang="pug">
-  .numpad.pull-left
-    h2
+v-container
+  v-layout
+    v-flex(row wrap)
       span.amount {{ amount }}
       small.currency {{ currency }}
-    button.btn.btn-lg.btn-default(v-for='i in buttons' @click='update', :id='id(i)') {{i}}
-    br(v-for='i in buttons' v-if='i + 1 % 3 == 0')
+      template(v-for='i in buttons.length / 3')
+        v-flex(row)
+          v-btn(v-for='j in 3' @click='update', :id='id(j * i + 1)') {{buttons[j + 3 * i - 4]}}
 </template>
 
 <script>
