@@ -10,6 +10,16 @@ import store from './store'
 Vue.use(VueAxios, Axios)
 Vue.use(Vuetify)
 
+var tag = document.createElement('script')
+
+document.addEventListener('deviceready', function () {
+  Vue.prototype.$cordova = cordova
+}, false)
+
+tag.type = 'text/javascript'
+document.body.appendChild(tag)
+tag.src = 'cordova.js'
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

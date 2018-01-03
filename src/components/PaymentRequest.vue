@@ -1,5 +1,6 @@
 <template lang="pug">
   .payment-request
+    HCE 
     h4(v-if='user.title') {{user.title}}
     img(v-if='user.logo')
     numpad(:currency='user.currency', :amount='amount', @update='a => amount = a')
@@ -25,11 +26,12 @@ import qr from 'qrcode'
 import numpad from './NumPad'
 import tippad from './TipPad'
 import rates from './Rates'
+import HCE from './HCE'
 
 const f = parseFloat
 
 export default {
-  components: { numpad, tippad, rates },
+  components: { numpad, tippad, rates, HCE },
   data () {
     return {
       user: {},
@@ -70,7 +72,8 @@ export default {
     }
   },
   mounted () {
-    this.loadWallet()
+    // this.loadWallet()
+    console.log('nihao')
   }
 }
 </script>

@@ -12,7 +12,7 @@
       v-btn(icon @click='$router.push("/logout")')
         v-icon power_settings_new
     v-navigation-drawer.primary(v-model='drawer' enable-resize-watcher app clipped)
-      v-list.secondary(dark)
+      v-list.secondary
         template(v-for='i in menu') 
           v-list-tile(:key='i.route' ripple @click='$router.push(i.route)')
             v-list-tile-action

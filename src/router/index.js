@@ -24,7 +24,7 @@ const routes = [
 Vue.use(VueRouter)
 
 export default new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   routes: routes,
   scrollBehavior: function (to, from, savedPosition) {
     if (savedPosition) {
