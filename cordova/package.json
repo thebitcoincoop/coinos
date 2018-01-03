@@ -12,14 +12,16 @@
   "dependencies": {
     "cordova-android": "^6.3.0",
     "cordova-plugin-hce": "^1.0.0",
-    "cordova-plugin-whitelist": "^1.3.3"
+    "cordova-plugin-whitelist": "^1.3.3",
+    "phonegap-nfc": "^0.7.1"
   },
   "cordova": {
     "plugins": {
       "cordova-plugin-whitelist": {},
       "cordova-plugin-hce": {
         "AID_FILTER": "F222222222"
-      }
+      },
+      "phonegap-nfc": {}
     },
     "platforms": [
       "android"

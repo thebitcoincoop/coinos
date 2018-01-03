@@ -16,5 +16,13 @@
     "variables": {
       "AID_FILTER": "F222222222"
     }
+  },
+  "phonegap-nfc": {
+    "source": {
+      "type": "registry",
+      "id": "phonegap-nfc"
+    },
+    "is_top_level": true,
+    "variables": {}
   }
 }

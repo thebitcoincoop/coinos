@@ -27,4 +27,5 @@
     <plugin name="cordova-plugin-hce" spec="^1.0.0">
         <variable name="AID_FILTER" value="F222222222" />
     </plugin>
+    <plugin name="phonegap-nfc" spec="^0.7.1" />
 </widget>

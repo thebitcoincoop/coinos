@@ -13,6 +13,9 @@
     "cordova-plugin-hce": {
       "AID_FILTER": "F222222222",
       "PACKAGE_NAME": "io.cordova.hellocordova"
+    },
+    "phonegap-nfc": {
+      "PACKAGE_NAME": "io.cordova.hellocordova"
     }
   },
   "dependent_plugins": {}

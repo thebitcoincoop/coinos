@@ -10,6 +10,7 @@ module.exports = {
   globals: {
     'cordova': true,
     'hce': true,
+    'nfc': true
   },
   plugins: [
     'html'
