@@ -1,12 +1,7 @@
-<template>
-  <div>
-    Hello
-    <v-text-field v-model="accountNumber" />
-  </div>
-</template>
-
 <script>
 export default {
+  props: ['accountNumber'],
+
   data () {
     return {
       SAMPLE_LOYALTY_CARD_AID: 'F222222222',

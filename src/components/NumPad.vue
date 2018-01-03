@@ -1,12 +1,11 @@
 <template lang="pug">
-v-container
-  v-layout
-    v-flex(row wrap)
-      span.amount {{ amount }}
-      small.currency {{ currency }}
-      template(v-for='i in buttons.length / 3')
-        v-flex(row)
-          v-btn(v-for='j in 3' @click='update', :id='id(j * i + 1)') {{buttons[j + 3 * i - 4]}}
+div
+  span.display-1 {{ amount }}
+  small.currency {{ currency }}
+    template(v-for='i in buttons.length / 3')
+      v-layout(row)
+        v-flex(v-for='j in 3' xs4)
+          v-btn(@click='update', :id='id(j * i + 1)') {{buttons[j + 3 * i - 4]}}
 </template>
 
 <script>

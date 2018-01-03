@@ -1,10 +1,13 @@
 <template lang="pug">
   .payment-request
-    HCE 
+    HCE(:accountNumber='amount')
     h4(v-if='user.title') {{user.title}}
     img(v-if='user.logo')
-    numpad(:currency='user.currency', :amount='amount', @update='a => amount = a')
-    tippad(:amount='amount', @update='t => tip = t')
+    v-layout
+      v-flex(xs9)
+        numpad(:currency='user.currency', :amount='amount', @update='a => amount = a')
+      v-flex(xs3)
+        tippad(:amount='amount', @update='t => tip = t')
     rates(:user='user', @update='r => rate = r')
     #payment
       h2

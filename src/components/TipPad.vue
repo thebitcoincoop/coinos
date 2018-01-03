@@ -1,15 +1,12 @@
 <template lang="pug">
-.tippad.tablet
-  h2
-    small + 
-    span.tip {{tip}}
-  button.btn.btn-lg.btn-default(:class='{ active: percent == 0 }', type='button', @click='percent = 0') No Tip
-  br
-  button.btn.btn-lg.btn-default(:class='{ active: percent == 10 }', type='button', @click='percent = 10') +10%
-  br
-  button.btn.btn-lg.btn-default(:class='{ active: percent == 15 }', type='button', @click='percent = 15') +15%
-  br
-  button.btn.btn-lg.btn-default(:class='{ active: percent == 20 }', type='button', @click='percent = 20') +20%
+div
+  span.display-1 {{tip}}
+  v-layout
+    v-flex
+      v-btn(:class='{ active: percent == -1 }' @click='percent = 0') No Tip
+      v-btn(:class='{ active: percent == 10 }' @click='percent = 10') +10%
+      v-btn(:class='{ active: percent == 15 }' @click='percent = 15') +15%
+      v-btn(:class='{ active: percent == 20 }' @click='percent = 20') +20%
 </template>
 
 <script>
