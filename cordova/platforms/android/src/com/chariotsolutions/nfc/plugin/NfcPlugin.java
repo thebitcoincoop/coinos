@@ -31,7 +31,7 @@ import android.nfc.tech.NdefFormatable;
 import android.os.Parcelable;
 import android.util.Log;
 
-public class NfcPlugin extends CordovaPlugin implements NfcAdapter.OnNdefPushCompleteCallback {
+public class NfcPlugin extends CordovaPlugin implements NfcAdapter.OnNdefPushCompleteCallback, LoyaltyCardReader.AccountCallback {
     private static final String REGISTER_MIME_TYPE = "registerMimeType";
     private static final String REMOVE_MIME_TYPE = "removeMimeType";
     private static final String REGISTER_NDEF = "registerNdef";
@@ -71,6 +71,7 @@ public class NfcPlugin extends CordovaPlugin implements NfcAdapter.OnNdefPushCom
 
     private CallbackContext shareTagCallback;
     private CallbackContext handoverCallback;
+    private CallbackContext myCallback;
 
     @Override
     public boolean execute(String action, JSONArray data, CallbackContext callbackContext) throws JSONException {
@@ -98,6 +99,7 @@ public class NfcPlugin extends CordovaPlugin implements NfcAdapter.OnNdefPushCom
           removeMimeType(data, callbackContext);
 
         } else if (action.equalsIgnoreCase(REGISTER_NDEF)) {
+          myCallback = callbackContext;
           registerNdef(callbackContext);
 
         } else if (action.equalsIgnoreCase(REMOVE_NDEF)) {
@@ -438,14 +440,19 @@ public class NfcPlugin extends CordovaPlugin implements NfcAdapter.OnNdefPushCom
 
     private void startNfc() {
         createPendingIntent(); // onResume can call startNfc before execute
+        final NfcPlugin me = this;
 
         getActivity().runOnUiThread(new Runnable() {
             public void run() {
-                NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
+                Activity activity = getActivity();
+                NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(activity);
 
                 if (nfcAdapter != null && !getActivity().isFinishing()) {
                     try {
+                        int READER_FLAGS = NfcAdapter.FLAG_READER_NFC_A | NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK;
+                        LoyaltyCardReader mLoyaltyCardReader = new LoyaltyCardReader(me);
                         nfcAdapter.enableForegroundDispatch(getActivity(), getPendingIntent(), getIntentFilters(), getTechLists());
+                        nfcAdapter.enableReaderMode(activity, mLoyaltyCardReader, READER_FLAGS, null);
 
                         if (p2pMessage != null) {
                             nfcAdapter.setNdefPushMessage(p2pMessage, getActivity());
@@ -762,5 +769,10 @@ public class NfcPlugin extends CordovaPlugin implements NfcAdapter.OnNdefPushCom
             shareTagCallback.sendPluginResult(result);
         }
 
+    }
+
+    @Override
+    public void onAccountReceived(final String account) {
+        myCallback.success("oh yeah");
     }
 }

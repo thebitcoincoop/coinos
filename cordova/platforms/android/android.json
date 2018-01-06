@@ -70,7 +70,7 @@
       "PACKAGE_NAME": "io.cordova.hellocordova"
     },
     "phonegap-nfc": {
-      "PACKAGE_NAME": "io.cordova.hellocordova"
+      "PACKAGE_NAME": "io.cordova.coinos"
     }
   },
   "dependent_plugins": {},

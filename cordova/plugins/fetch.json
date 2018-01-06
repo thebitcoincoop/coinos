@@ -19,8 +19,8 @@
   },
   "phonegap-nfc": {
     "source": {
-      "type": "registry",
-      "id": "phonegap-nfc"
+      "type": "local",
+      "path": "/home/adam/coinos.io/cordova/node_modules/phonegap-nfc"
     },
     "is_top_level": true,
     "variables": {}

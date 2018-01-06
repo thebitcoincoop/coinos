@@ -2,13 +2,15 @@
 div
   h1 Wallet
   h2 Balance: {{balance}}
+  pre {{logs}}
 </template>
 
 <script>
 export default {
   data () {
     return {
-      balance: 25100
+      balance: 25100,
+      logs: []
     }
   },
 
@@ -20,17 +22,17 @@ export default {
       // dump the raw json of the message
       // note: real code will need to decode
       // the payload from each record
-      console.log(JSON.stringify(ndefMessage))
+      this.logs.push(JSON.stringify(ndefMessage))
 
       // assuming the first record in the message has
       // a payload that can be converted to a string.
-      console.log(nfc.bytesToString(ndefMessage[0].payload).substring(3))
+      this.logs.push(nfc.bytesToString(ndefMessage[0].payload).substring(3))
     },
     function () { // success callback
-      console.log('Waiting for NDEF tag')
+      this.logs.push('Waiting for NDEF tag')
     },
     function (error) { // error callback
-      console.log('Error adding NDEF listener ' + JSON.stringify(error))
+      this.logs.push('Error adding NDEF listener ' + JSON.stringify(error))
     })
   }
 }
