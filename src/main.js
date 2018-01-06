@@ -22,9 +22,9 @@ tag.src = 'cordova.js'
 
 /* eslint-disable no-new */
 new Vue({
+  components: { App, Styles },
   el: '#app',
   template: '<app/>',
-  components: { App, Styles },
   router,
-  store
+  store,
 })

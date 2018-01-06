@@ -1,2 +1,5 @@
 build/*.js
 config/*.js
+node_modules
+cordova
+dist

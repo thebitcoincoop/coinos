@@ -76,7 +76,6 @@ export default {
   },
   mounted () {
     // this.loadWallet()
-    console.log('nihao')
   }
 }
 </script>

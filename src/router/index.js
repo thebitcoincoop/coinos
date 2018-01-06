@@ -18,7 +18,7 @@ const routes = [
   { path: '/settings', component: Settings },
   { path: '/about', component: About },
   { path: '/logout', component: SignIn, props: { logout: true } },
-  { path: '/:user', component: PaymentRequest }
+  { path: '/:user', component: PaymentRequest },
 ]
 
 Vue.use(VueRouter)
@@ -32,5 +32,5 @@ export default new VueRouter({
     } else {
       return { x: 0, y: 0 }
     }
-  }
+  },
 })

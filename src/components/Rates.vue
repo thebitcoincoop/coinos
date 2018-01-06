@@ -13,7 +13,7 @@ import axios from 'axios'
 export default {
   data () {
     return {
-      rate: 0
+      rate: 0,
     }
   },
   props: ['user'],
@@ -22,6 +22,6 @@ export default {
       this.rate = res.data.symbols.BTCCAD.ask
       this.$emit('update', this.rate)
     })
-  }
+  },
 }
 </script>
