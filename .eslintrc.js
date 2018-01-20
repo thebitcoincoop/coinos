@@ -6,7 +6,7 @@ module.exports = {
     node: true,
   },
   plugins: [
-        'html',
+    'html',
   ],
   globals: {
     'cordova': true,
@@ -14,12 +14,12 @@ module.exports = {
     'nfc': true
   },
   settings: {
-        // if you have .vue active for eslint-html-plugin settings
-        // linting will not progress through all subdirectories
-        // it conflicts with eslint-plugin-vue (latest v3.5.0)
-        // it will stop at the main entry point.
-        "html/html-extensions": [".html", /* ".vue" */],  // consider .html files as XML
-        "html/report-bad-indent": "error",
+    // if you have .vue active for eslint-html-plugin settings
+    // linting will not progress through all subdirectories
+    // it conflicts with eslint-plugin-vue (latest v3.5.0)
+    // it will stop at the main entry point.
+    "html/html-extensions": [".html", /* ".vue" */],  // consider .html files as XML
+    "html/report-bad-indent": "error",
   },
   extends: [
     'eslint:recommended',

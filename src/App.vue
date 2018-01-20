@@ -4,11 +4,8 @@
       v-toolbar-side-icon(@click.stop='toggleMenu')
       v-toolbar-title(dark @click='$router.push("/")') CoinOS
       v-spacer
-      v-menu(left bottom offset-y :close-on-content-click='false')
-        v-btn(slot='activator' icon) 
-          v-icon(dark) search
-      v-btn(icon @click='$router.push("/")')
-        v-icon apps
+      v-btn(icon @click='$router.push("/logout")')
+        v-icon(color='yellow') mdi-flash
       v-btn(icon @click='$router.push("/logout")')
         v-icon power_settings_new
     v-navigation-drawer.primary(v-model='drawer' enable-resize-watcher app clipped)
@@ -20,7 +17,7 @@
                 v-icon {{i.icon}}
             v-list-tile-content {{i.content}}
     v-content
-      v-container(fluid)
+      v-container.pl-2(fluid)
         transition(name='fade')
           router-view
     v-footer(app color='white')
@@ -53,6 +50,9 @@ export default {
 </script> 
 
 <style lang="stylus">
+@require '../node_modules/vuetify/dist/vuetify.min.css'
+@require '../node_modules/mdi/css/materialdesignicons.min.css'
+
 .toolbar__title
   cursor pointer
 

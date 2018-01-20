@@ -5,7 +5,7 @@ div
     template(v-for='i in buttons.length / 3')
       v-layout(row)
         v-flex(v-for='j in 3' xs4)
-          v-btn(@click='update', :id='id(j * i + 1)') {{buttons[j + 3 * i - 4]}}
+          v-btn.small(@click='update', :id='id(j * i + 1)') {{buttons[j + 3 * i - 4]}}
 </template>
 
 <script>
@@ -62,3 +62,13 @@ export default {
   }
 }
 </script>
+
+<style lang="stylus">
+  .btn__content::before
+    width 30px !important
+    max-width 30px !important
+
+  .btn__content
+    width 30px !important
+</style>
+

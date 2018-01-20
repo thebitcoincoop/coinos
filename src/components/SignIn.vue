@@ -1,5 +1,5 @@
 <template lang="pug">
-v-container
+div.ml-3.mr-3
   p.text-xs-center.py-5.logo
 
   v-alert(color='error' v-if='message') {{message}}

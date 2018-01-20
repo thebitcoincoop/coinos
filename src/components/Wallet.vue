@@ -2,10 +2,15 @@
 div
   h1 Wallet
   h2 Balance: {{balance}}
+  lightning
 </template>
 
 <script>
+import Lightning from './Lightning'
+
 export default {
+  components: { Lightning },
+
   data () {
     return {
       balance: 25100,
@@ -13,9 +18,10 @@ export default {
   },
 
   mounted () {
-    window.NativeLogs.getLog(1000, false, logs => console.log(logs))
     let vm = this
-    window.nfc.addTagDiscoveredListener(event => { vm.balance -= event.tag })
+    if (typeof cordova !== 'undefined') {
+      window.nfc.addTagDiscoveredListener(event => { vm.balance -= event.tag })
+    }
   },
 }
 </script>
