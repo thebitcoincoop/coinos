@@ -9,8 +9,8 @@ import store from './store'
 Vue.use(VueAxios, Axios)
 Vue.use(Vuetify, {
   theme: {
-    primary: '#2a89a3',
-    secondary: '#eee',
+    primary: '#000',
+    secondary: '#333',
     accent: '#8c9eff',
     error: '#b71c1c',
   },

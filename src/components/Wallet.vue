@@ -1,5 +1,5 @@
 <template lang="pug">
-div
+v-container
   h1 Wallet
   h2 Balance: {{balance}}
   lightning

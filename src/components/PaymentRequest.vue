@@ -3,7 +3,7 @@
     HCE(:accountNumber='amount')
     h4(v-if='user.title') {{user.title}}
     img(v-if='user.logo')
-    v-layout
+    v-layout(style="max-width: 400px")
       v-flex(xs9)
         numpad(:currency='user.currency', :amount='amount', @update='a => amount = a')
       v-flex(xs3)
@@ -11,8 +11,7 @@
     rates(:user='user', @update='r => rate = r')
     #payment
       h2
-        small Please send 
-        span {{total}} 
+        small Please send {{total}} 
         small {{user.unit}}
       canvas#qr
       h2
@@ -66,7 +65,7 @@ export default {
   },
   methods: {
     loadWallet () {
-      axios('/api/yy.json').then(res => {
+      axios('/api/users/yy').then(res => {
         this.user = JSON.parse(res.data)
         let master = bitcoin.HDNode.fromBase58(this.user.pubkey)
         let child = master.derive(0).derive(this.user.index)

@@ -63,12 +63,4 @@ export default {
 }
 </script>
 
-<style lang="stylus">
-  .btn__content::before
-    width 30px !important
-    max-width 30px !important
-
-  .btn__content
-    width 30px !important
-</style>
 
