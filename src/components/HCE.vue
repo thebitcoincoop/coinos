@@ -8,7 +8,6 @@ export default {
       SELECT_APDU_HEADER: '00A40400',
       SELECT_OK_SW: '9000',
       UNKNOWN_CMD_SW: '0000',
-      accountNumber: '1234'
     }
   },
 

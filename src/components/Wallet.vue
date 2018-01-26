@@ -2,7 +2,6 @@
 v-container
   h1 Wallet
   h2 Balance: {{balance}}
-  lightning
 </template>
 
 <script>

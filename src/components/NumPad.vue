@@ -1,7 +1,7 @@
 <template lang="pug">
 div
   span.display-1 {{ amount }}
-  small.currency {{ currency }}
+  small {{ currency }}
     template(v-for='i in buttons.length / 3')
       v-layout(row)
         v-flex(v-for='j in 3' xs4)
