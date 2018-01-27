@@ -51,7 +51,6 @@ export default {
 
 <style lang="stylus">
 @require '../node_modules/vuetify/dist/vuetify.min.css'
-@require '../node_modules/mdi/css/materialdesignicons.min.css'
 
 .toolbar__title
   cursor pointer

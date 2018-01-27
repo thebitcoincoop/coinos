@@ -5,6 +5,7 @@ import Axios from 'axios'
 import App from './App'
 import router from './router'
 import store from './store'
+import 'mdi/css/materialdesignicons.min.css'
 
 Vue.use(VueAxios, Axios)
 Vue.use(Vuetify, {

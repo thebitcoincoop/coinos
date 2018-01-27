@@ -17,7 +17,7 @@
           canvas#qr
     template(v-if='received') 
       v-alert Payment Received. Thank you!
-      audio(src='/static/success.wav', hidden='true', enablejavascript='true')
+      audio(src='static/success.wav', hidden='true', enablejavascript='true')
       lightning
 </template>
 
