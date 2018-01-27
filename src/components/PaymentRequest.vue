@@ -8,13 +8,15 @@
       v-flex(xs3)
         tippad(:amount='amount', @update='t => tip = t')
     rates(:user='user', @update='r => rate = r')
-    h2
-      small Please send {{total}} 
     v-layout
       v-flex(xs12)
+        h1 {{total}}
         v-card.pa-3
-          div(style="word-wrap: break-word") {{payreq}}
           canvas#qr
+          v-btn(:data-clipboard-text='payreq')
+            v-icon content_copy
+          v-btn
+            v-icon nfc
     template(v-if='received') 
       v-alert Payment Received. Thank you!
       audio(src='static/success.wav', hidden='true', enablejavascript='true')
@@ -53,7 +55,6 @@ export default {
   },
   computed: {
     total () {
-      if (!this.address) return 0
       let total = ((f(this.amount) / f(this.rate)) + f(this.tip)).toFixed(8)
 
       let time = this.timeout ? 50 : 0
@@ -104,7 +105,7 @@ export default {
     }
   },
   mounted () {
-
+    new Clipboard('.btn')
     // this.loadWallet()
   }
 }
