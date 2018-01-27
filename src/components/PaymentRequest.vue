@@ -1,5 +1,8 @@
 <template lang="pug">
   div
+    v-snackbar(:bottom="true" v-model="snackbar" :timeout="1500")
+      v-icon info
+      | Copied to Clipboard
     h4(v-if='user.title') {{user.title}}
     img(v-if='user.logo')
     v-layout(style="max-width: 400px")
@@ -13,10 +16,10 @@
         h1 {{total}}
         v-card.pa-3
           canvas#qr
-          v-btn(:data-clipboard-text='payreq')
+          v-btn(:data-clipboard-text='payreq' @click.native="snackbar = true")
             v-icon content_copy
           v-btn
-            v-icon nfc
+            v-icon mdi-cellphone-wireless
     template(v-if='received') 
       v-alert Payment Received. Thank you!
       audio(src='static/success.wav', hidden='true', enablejavascript='true')
@@ -50,7 +53,8 @@ export default {
       address: '1234',
       received: false,
       timeout: null,
-      payreq: {}
+      payreq: {},
+      snackbar: false
     }
   },
   computed: {

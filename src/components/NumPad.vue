@@ -1,11 +1,11 @@
 <template lang="pug">
-div
+.numpad
   span.display-1 {{ amount }}
   small {{ currency }}
     template(v-for='i in buttons.length / 3')
       v-layout(row)
         v-flex(v-for='j in 3' xs4)
-          v-btn.small(@click='update', :id='id(j * i + 1)') {{buttons[j + 3 * i - 4]}}
+          v-btn(@click='update', :id='id(j * i + 1)') {{buttons[j + 3 * i - 4]}}
 </template>
 
 <script>
@@ -64,3 +64,13 @@ export default {
 </script>
 
 
+<style lang="stylus">
+  div.btn__content {
+    width: 10px;
+    padding: 0;
+  }
+
+  .numpad .btn {
+    min-width: 75px;
+  }
+</style>
