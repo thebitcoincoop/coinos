@@ -2,7 +2,8 @@
   v-app(dark)
     v-toolbar(app dark color="primary" clipped-left fixed)
       v-toolbar-side-icon(@click.stop='toggleMenu')
-      v-toolbar-title(dark @click='$router.push("/")') CoinOS
+      v-toolbar-title(dark @click='$router.push("/")')
+        img.logo(src='static/img/coinos_logo.png')
       v-spacer
       v-btn(icon @click='$router.push("/logout")')
         v-icon(color='yellow') mdi-flash
@@ -64,4 +65,7 @@ export default {
  
   &-enter, &-leave-to
     opacity: 0
+
+img.logo
+  max-height 40px
 </style>

@@ -3,14 +3,12 @@
     v-snackbar(:bottom="true" v-model="snackbar" :timeout="1500")
       v-icon info
       | Copied to Clipboard
-    h4(v-if='user.title') {{user.title}}
-    img(v-if='user.logo')
-    v-layout(style="max-width: 400px")
+    v-layout(style="max-width: 320px")
       v-flex(xs9)
         numpad(:currency='user.currency', :amount='amount', @update='a => amount = a')
       v-flex(xs3)
         tippad(:amount='amount', @update='t => tip = t')
-    rates(:user='user', @update='r => rate = r')
+    h2 {{rate}}
     v-layout
       v-flex(xs12)
         h1 {{total}}
@@ -34,14 +32,13 @@ import payreq from 'bolt11'
 
 import numpad from './NumPad'
 import tippad from './TipPad'
-import rates from './Rates'
 import HCE from './HCE'
 import Lightning from './Lightning'
 
 const f = parseFloat
 
 export default {
-  components: { numpad, tippad, rates, HCE, Lightning },
+  components: { numpad, tippad, HCE, Lightning },
   data () {
     return {
       user: {},
@@ -99,18 +96,15 @@ export default {
     }
   },
   methods: {
-    loadWallet () {
-      axios('/api/users/yy').then(res => {
-        this.user = JSON.parse(res.data)
-        let master = bitcoin.HDNode.fromBase58(this.user.pubkey)
-        let child = master.derive(0).derive(this.user.index)
-        this.address = child.getAddress().toString()
-      })
+    async loadWallet () {
+      this.user = this.$store.getters['user']
+      let rates = await axios('/api/rates')
+      this.rate = rates.data.ask
     }
   },
   mounted () {
     new Clipboard('.btn')
-    // this.loadWallet()
+    this.loadWallet()
   }
 }
 </script>
