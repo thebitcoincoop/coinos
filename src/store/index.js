@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import bitcoin from 'bitcoinjs-lib'
+import bip39 from 'bip39'
 
 Vue.use(Vuex)
 
@@ -13,8 +14,9 @@ export default new Vuex.Store({
   },
   getters: {
     user: s => {
-      let master = bitcoin.HDNode.fromBase58(s.user.pubkey)
-      let child = master.derive(0).derive(s.user.index)
+      let mnemonic = bip39.generateMnemonic()
+      let key = bitcoin.HDNode.fromSeedBuffer(bip39.mnemonicToSeed(mnemonic), bitcoin.networks.testnet).deriveHardened(44).deriveHardened(0)
+      let child = key.derive(0).derive(0)
       s.user.address = child.getAddress().toString()
       return s.user
     },

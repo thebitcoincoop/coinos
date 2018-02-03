@@ -1,5 +1,7 @@
 <template lang="pug">
   div
+    pre {{user.address}}
+    pre {{received}}
     v-snackbar(:bottom="true" v-model="snackbar" :timeout="1500")
       v-icon info
       | Copied to Clipboard
@@ -29,11 +31,13 @@ import axios from 'axios'
 import bitcoin from 'bitcoinjs-lib'
 import qr from 'qrcode'
 import payreq from 'bolt11'
+import ds from 'deepstream.io-client-js'
 
 import numpad from './NumPad'
 import tippad from './TipPad'
 import HCE from './HCE'
 import Lightning from './Lightning'
+import { mapGetters } from 'vuex'
 
 const f = parseFloat
 
@@ -41,7 +45,6 @@ export default {
   components: { numpad, tippad, HCE, Lightning },
   data () {
     return {
-      user: {},
       message: '',
       about: '',
       amount: 0,
@@ -51,10 +54,14 @@ export default {
       received: false,
       timeout: null,
       payreq: {},
-      snackbar: false
+      snackbar: false,
+      txs: [],
+      received: 0,
     }
   },
   computed: {
+    ...mapGetters(['user']),
+
     total () {
       let total = ((f(this.amount) / f(this.rate)) + f(this.tip)).toFixed(8)
 
@@ -93,16 +100,28 @@ export default {
       }, time)
 
       return total
-    }
+    },
   },
   methods: {
     async loadWallet () {
-      this.user = this.$store.getters['user']
       let rates = await axios('/api/rates')
       this.rate = rates.data.ask
     }
   },
   mounted () {
+    const client = ds('localhost:6020')
+    client.login()
+    const vm = this
+
+    client.event.subscribe('tx', data => {
+      bitcoin.Transaction.fromHex(data).outs.map(o => {
+        let address = bitcoin.address.fromOutputScript(o.script, bitcoin.networks.testnet)
+        if (address === this.user.address) {
+          this.received = o.value
+        } 
+      })
+    })
+
     new Clipboard('.btn')
     this.loadWallet()
   }

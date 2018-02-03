@@ -1,6 +1,6 @@
 <template lang="pug">
 v-layout
-  v-flex(xs3 offset-xs3)
+  v-flex(xs12 md4)
     v-alert(color='error' v-if='message') {{message}}
     v-alert(color='success' v-if='logout') You've been logged out
     v-form(@submit='submit')

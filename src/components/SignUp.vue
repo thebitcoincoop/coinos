@@ -1,26 +1,13 @@
 <template lang="pug">
-div
-  #main-logo
-  .alert.alert-danger(v-if='error')
-    | {{error}}
-  form(v-on:submit='submit')
-    .form-group
-      label(for='username') Username:
-      input.form-control(v-model='username')
-    .form-group
-      label(for='email') Email:
-      input.form-control(v-model='email')
-    .form-group
-      label(for='password') Passphrase:
-      input.form-control(v-model='password', type='password')
-    .form-group
-      label(for='confirm') Confirm Passphrase:
-      input.form-control(v-model='passconfirm', type='password')
-    input(v-model='commission', type='hidden', value='0')
-    input(v-model='unit', type='hidden')
-    input(v-model='pubkey', type='hidden')
-    input(v-model='privkey', type='hidden')
-    input.btn.btn-primary(type='submit', value='Register')
+v-layout
+  v-flex(xs12 md3)
+    v-alert(v-if='error') {{error}}
+    v-form(@submit='submit')
+      v-text-field(label='Username' v-model='username')
+      v-text-field(label='Email' v-model='email')
+      v-text-field(label='Passphrase' v-model='password')
+      v-text-field(label='Confirm' v-model='passconfirm')
+      v-btn(type='submit') Register
 </template>
 
 <script>

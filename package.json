@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "axios": "^0.16.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "bip39": "^2.3.1",
     "bitcoinjs-lib": "^3.1.1",
@@ -22,6 +23,7 @@
     "clipboard": "^1.7.1",
     "cookie-parser": "^1.4.3",
     "crypto-js": "^3.1.9-1",
+    "deepstream.io-client-js": "https://github.com/deepstreamIO/deepstream.io-client-js#v4",
     "eslint-plugin-vue": "^4.0.1",
     "mdi": "^2.1.19",
     "moment": "^2.18.1",
