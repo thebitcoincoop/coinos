@@ -4,7 +4,7 @@
     template(v-for='i in buttons.length / 3')
       v-layout(row)
         v-flex(v-for='j in 3' xs4)
-          v-btn(@click='update', :id='id(j * i + 1)') 
+          v-btn(@click='update' :ref='id(buttons[j  + 3 * i - 4])') 
             template(v-if='buttons[j + 3 * i - 4] !== "<"')
               | {{buttons[j + 3 * i - 4]}}
             v-icon(v-else) undo
@@ -21,25 +21,27 @@ export default {
     }
   },
   methods: {
-    id (i) {
+    id (n) {
       let prefix = 'button-'
-      if (i === '<') return prefix + 'lt'
-      return prefix + i
+      if (n === '<') return prefix + 'lt'
+      return prefix + n
     },
     keyup (e) {
       let key = e.keyCode
-      if (key > 56) key -= 48
+      console.log(key)
+      if (key > 57) key -= 48
       let id = this.codes.indexOf(key)
-      if (key === 8) id = 'lt'
+      if (key === 8) id = 'undo'
       if (key === 46 || key === 13) id = 'C'
       if (id < 0) return
-      document.querySelector(`#button-${id}`).click()
+      let event = { target: { innerHTML: id.toString() } }
+      this.update(event)
     },
     update (e) {
       let amount = parseFloat(this.amount)
       let m = e.target.innerHTML
 
-      if (m === '&lt;') {
+      if (m.includes('undo')) {
         amount = (Math.floor(100 * (parseFloat(amount) / 10)) / 100)
       } else if (amount < 10000000) {
         if (m === '00') {
