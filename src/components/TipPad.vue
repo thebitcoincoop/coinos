@@ -3,10 +3,10 @@ div
   span.display-1 {{tip}}
   v-layout
     v-flex
-      v-btn(:class='{ active: percent == -1 }' @click='percent = 0') No Tip
-      v-btn(:class='{ active: percent == 10 }' @click='percent = 10') +10%
-      v-btn(:class='{ active: percent == 15 }' @click='percent = 15') +15%
-      v-btn(:class='{ active: percent == 20 }' @click='percent = 20') +20%
+      v-btn(:color='percent ===  0 && "secondary"' @click='percent = 0') No Tip
+      v-btn(:class='percent === 10 && "secondary"' @click='percent = 10') +10%
+      v-btn(:class='percent === 15 && "secondary"' @click='percent = 15') +15%
+      v-btn(:class='percent === 20 && "secondary"' @click='percent = 20') +20%
 </template>
 
 <script>

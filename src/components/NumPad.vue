@@ -4,7 +4,11 @@
     template(v-for='i in buttons.length / 3')
       v-layout(row)
         v-flex(v-for='j in 3' xs4)
-          v-btn(@click='update', :id='id(j * i + 1)') {{buttons[j + 3 * i - 4]}}
+          v-btn(@click='update', :id='id(j * i + 1)') 
+            template(v-if='buttons[j + 3 * i - 4] !== "<"')
+              | {{buttons[j + 3 * i - 4]}}
+            v-icon(v-else) undo
+
 </template>
 
 <script>

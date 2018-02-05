@@ -1,7 +1,5 @@
 <template lang="pug">
   div
-    pre {{user.address}}
-    pre {{received}}
     v-snackbar(:bottom="true" v-model="snackbar" :timeout="1500")
       v-icon info
       | Copied to Clipboard
@@ -10,20 +8,17 @@
         numpad(:currency='user.currency', :amount='amount', @update='a => amount = a')
       v-flex(xs3)
         tippad(:amount='amount', @update='t => tip = t')
-    h2 {{rate}}
-    v-layout
+    v-alert(v-if='received' value='received' color='success') Received {{received}} satoshis
+    v-layout(v-else)
       v-flex(xs12)
-        h1 {{total}}
+        h1 {{total}} sats
         v-card.pa-3
           canvas#qr
+          pre {{user.address}}
           v-btn(:data-clipboard-text='payreq' @click.native="snackbar = true")
             v-icon content_copy
           v-btn
             v-icon mdi-cellphone-wireless
-    template(v-if='received') 
-      v-alert Payment Received. Thank you!
-      audio(src='static/success.wav', hidden='true', enablejavascript='true')
-      lightning
 </template>
 
 <script>
@@ -51,11 +46,9 @@ export default {
       tip: 0,
       rate: 0,
       address: '1234',
-      received: false,
       timeout: null,
       payreq: {},
       snackbar: false,
-      txs: [],
       received: 0,
     }
   },
@@ -63,7 +56,8 @@ export default {
     ...mapGetters(['user']),
 
     total () {
-      let total = ((f(this.amount) / f(this.rate)) + f(this.tip)).toFixed(8)
+      this.received = 0
+      let total = parseInt((f(this.amount * 100000000) / f(this.rate)) + f(this.tip))
 
       let time = this.timeout ? 50 : 0
       clearTimeout(this.timeout)
@@ -115,10 +109,14 @@ export default {
 
     client.event.subscribe('tx', data => {
       bitcoin.Transaction.fromHex(data).outs.map(o => {
-        let address = bitcoin.address.fromOutputScript(o.script, bitcoin.networks.testnet)
-        if (address === this.user.address) {
-          this.received = o.value
-        } 
+        try {
+          let address = bitcoin.address.fromOutputScript(o.script, bitcoin.networks.testnet)
+          if (address === this.user.address) {
+            this.received = o.value
+            var audio = new Audio('/static/success.wav')
+            audio.play()
+          } 
+        } catch(e) { }
       })
     })
 
