@@ -21,9 +21,17 @@
       v-container.pl-2(fluid)
         transition(name='fade')
           router-view
-    v-footer(app color='white')
-      v-layout(row wrap)
-        v-flex(xs12)
+    v-footer(app)
+      v-bottom-nav(absolute style="height: 60px; margin-bottom: 55px")
+        v-btn(flat dark @click="$router.push('/receive')")
+          span Receive
+          v-icon mdi-arrow-left-bold-box
+        v-btn(flat dark @click="$router.push('/home')") 
+          span Home
+          v-icon home
+        v-btn(flat dark @click="$router.push('/send')")
+          span Send
+          v-icon mdi-send
 </template>
 
 <script>
@@ -34,8 +42,9 @@ export default {
       drawer: false,
       menu: [
         { route: 'home', content: 'Home', icon: 'home' },
-        { route: 'sales', content: 'Sales', icon: 'assignment' },
-        { route: 'wallet', content: 'Wallet', icon: 'lock' },
+        { route: 'send', content: 'Send', icon: 'mdi-send' },
+        { route: 'receive', content: 'Receive', icon: 'mdi-arrow-left-bold-box' },
+        { route: 'payments', content: 'Payments', icon: 'assignment' },
         { route: 'account', content: 'Account', icon: 'person' },
         { route: 'settings', content: 'Settings', icon: 'settings' },
         { route: 'logout', content: 'Logout', icon: 'power_settings_new' }

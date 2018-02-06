@@ -1,0 +1,8 @@
+query transactions {
+  transactions {
+    hash,
+    date,
+    rate,
+    amount,
+  }
+}

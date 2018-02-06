@@ -3,7 +3,7 @@
     v-snackbar(:bottom="true" v-model="snackbar" :timeout="1500")
       v-icon info
       | Copied to Clipboard
-    v-layout(style="max-width: 320px")
+    v-layout(style="max-width: 340px")
       v-flex(xs9)
         numpad(:currency='user.currency', :amount='amount', @update='a => amount = a')
       v-flex(xs3)
@@ -11,7 +11,7 @@
     v-alert(v-if='received' value='received' color='success') Received {{received}} satoshis
     v-layout(v-else)
       v-flex(xs12)
-        h1 {{total}} sats
+        h1 {{total}} sats #[span.title.grey--text @] {{rate}}
         v-card.pa-3
           canvas#qr
           pre {{user.address}}
@@ -57,8 +57,7 @@ export default {
 
     total () {
       this.received = 0
-      let total = parseInt((f(this.amount * 100000000) / f(this.rate)) + f(this.tip))
-
+      let total = parseInt(((f(this.amount) + f(this.tip)) / this.rate) * 100000000)
       let time = this.timeout ? 50 : 0
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {

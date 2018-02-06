@@ -28,7 +28,6 @@ export default {
     },
     keyup (e) {
       let key = e.keyCode
-      console.log(key)
       if (key > 57) key -= 48
       let id = this.codes.indexOf(key)
       if (key === 8) id = 'undo'
@@ -43,7 +42,7 @@ export default {
 
       if (m.includes('undo')) {
         amount = (Math.floor(100 * (parseFloat(amount) / 10)) / 100)
-      } else if (amount < 10000000) {
+      } else if (amount < 1000) {
         if (m === '00') {
           amount = 100 * amount
         } else {
@@ -70,12 +69,7 @@ export default {
 
 
 <style lang="stylus">
-  div.btn__content {
-    width: 10px;
-    padding: 0;
-  }
-
   .numpad .btn {
-    min-width: 75px;
+    min-width: 78px;
   }
 </style>

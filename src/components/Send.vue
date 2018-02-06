@@ -1,9 +1,18 @@
 <template lang="pug">
 v-container
-  h1 Wallet
   h2 Balance: {{balance}}
+  v-layout
+    v-flex(xs9)
+      v-text-field(label='Amount' dark v-model='amount')
+    v-flex(xs3)
+      v-btn(small fab) Max
+  v-text-field.small(label='To' dark v-model='address')
+  v-btn(@click='paste')
+    v-icon assignment
+    span Paste
   v-btn(@click='scan')
-    v-icon camera
+    v-icon camera_alt
+    span Scan
   pre {{scanresult}}
 </template>
 
@@ -17,10 +26,15 @@ export default {
     return {
       scanresult: '',
       balance: 25100,
+      address: '',
     }
   },
 
   methods: {
+    paste () {
+      this.address = '186s6a2P9BxKxYA6rthRk3bUfXT8dsYhsm'
+      console.log('paste')
+    },
     scan () {
       console.log('clicked')
       if (typeof window.QRScanner !== 'undefined') {
@@ -79,3 +93,8 @@ export default {
   },
 }
 </script>
+
+<style lang="stylus">
+.small input
+  font-size 14px
+</style>

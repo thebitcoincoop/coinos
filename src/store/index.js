@@ -1,16 +1,30 @@
+import apolloClient from '../apollo-client'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import bitcoin from 'bitcoinjs-lib'
 import bip39 from 'bip39'
+import transactionsQuery from '../graphql/transactions.gql'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     user: {},
+    transactions: {},
+  },
+  actions: {
+    async getTransactions ({ commit }) {
+      let res = await apolloClient.query({
+        query: transactionsQuery,
+        fetchPolicy: 'network-only',
+      })
+
+      commit('SET_TRANSACTIONS', res.data.transactions)
+    },
   },
   mutations: {
     SET_USER (s, v) { s.user = v },
+    SET_TRANSACTIONS (s, v) { s.transactions = v },
   },
   getters: {
     user: s => {
@@ -20,5 +34,6 @@ export default new Vuex.Store({
       s.user.address = child.getAddress().toString()
       return s.user
     },
+    transactions: s => s.transactions,
   },
 })

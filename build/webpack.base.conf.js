@@ -81,8 +81,12 @@ module.exports = {
         query: {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
-        }
-      }
+        },
+      },
+      {
+        test: /\.(graphql|gql)$/,
+        loader: 'graphql-tag/loader'
+      },
   ]
   },
   eslint: {
