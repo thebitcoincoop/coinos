@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 import bitcoin from 'bitcoinjs-lib'
 import bip39 from 'bip39'
 import transactionsQuery from '../graphql/transactions.gql'
+// import ds from 'deepstream.io-client-js'
 
 Vue.use(Vuex)
 
@@ -11,6 +12,7 @@ export default new Vuex.Store({
   state: {
     user: {},
     transactions: {},
+    balance: 0,
   },
   actions: {
     async getTransactions ({ commit }) {
@@ -21,10 +23,26 @@ export default new Vuex.Store({
 
       commit('SET_TRANSACTIONS', res.data.transactions)
     },
+
+    async getBalance ({ commit }) {
+      let res = await Vue.axios.get('/api/balance')
+
+      commit('SET_BALANCE', res.data.balance)
+    },
+
+    async sendPayment ({ commit }, payreq) {
+      let res = await Vue.axios.post('/api/sendPayment', { payreq })
+      /*
+      const client = ds('localhost:6020')
+      client.login()
+      client.event.emit('payment', payreq)
+      */
+    },
   },
   mutations: {
     SET_USER (s, v) { s.user = v },
     SET_TRANSACTIONS (s, v) { s.transactions = v },
+    SET_BALANCE (s, v) { s.balance = v },
   },
   getters: {
     user: s => {
@@ -35,5 +53,6 @@ export default new Vuex.Store({
       return s.user
     },
     transactions: s => s.transactions,
+    balance: s => s.balance,
   },
 })
