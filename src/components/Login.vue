@@ -27,7 +27,7 @@ export default {
       let user = this.$data.user
       e.preventDefault()
       try {
-        let res = await this.axios.post('/api/login', user)
+        let res = await this.axios.post('/login', user)
         this.$store.commit('SET_USER', res.data.user)
         this.$router.push('/' + res.data.user.username)
       } catch (e) {

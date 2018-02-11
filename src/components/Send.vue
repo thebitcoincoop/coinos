@@ -1,23 +1,23 @@
 <template lang="pug">
 v-container
   h2 Balance: {{balance}}
-  v-layout
-    v-flex(xs9)
-      v-text-field(label='Amount' dark v-model='amount')
-    v-flex(xs3)
-      v-btn(small fab) Max
-  v-text-field.small(label='To' dark v-model='address')
-  v-btn(@click='paste')
-    v-icon assignment
-    span Paste
+  v-text-field(label='Invoice' dark v-model='payreq' @input='decode')
+  v-list.elevation-1(v-if='payobj')
+    v-list-tile
+      v-list-tile-title Amount
+      v-list-tile-sub-title {{payobj.satoshis}}
+    v-list-tile
+      v-list-tile-title Recipient
+      v-list-tile-sub-title {{payobj.payeeNodeKey | trim}}
+    v-list-tile
+      v-list-tile-title Date
+      v-list-tile-sub-title {{payobj.timestampString}}
   v-btn(@click='scan')
-    v-icon camera_alt
+    v-icon.mr-1 camera_alt
     span Scan
-  pre {{scanresult}}
-  v-btn(color="green darken-4" dark @click='send') 
-    v-icon send
-    span Send It
-  pre {{payreq}}
+  v-btn(v-if='payobj' color="green" dark @click='send')
+    v-icon.mr-1 send
+    span Pay
 </template>
 
 <script>
@@ -28,12 +28,17 @@ import payreq from 'bolt11'
 export default {
   components: { Lightning },
 
+  filters: {
+    trim (w) {
+      return w.substring(0, 12)
+    },
+  },
+
   data () {
     return {
       scanresult: '',
-      address: '',
       payreq: '',
-      amount: '', 
+      payobj: '',
     }
   },
 
@@ -42,18 +47,26 @@ export default {
   }, 
 
   methods: {
+    decode () {
+      this.payobj = null
+      try { 
+        this.payobj = payreq.decode(this.payreq)
+      } catch (e) {}
+    },
+
     send () {
-      this.sendPayment('lntb1500n1pd8hmqepp5ckc2xppw56snz2vetuu3sjewugrhutqnpn7227a2yawsregg33aqdyu0v3xgg36yffx2ctyypqhyarfvdkx2w3qvpkxuttsv9ukqgrxdaezqur9dacxcefqw35xzapqwaskuarnypkjytpzdy3r5gn9xucrxvrzxe3z6et9v9sj6dp5v5cz6wfh8ymj6drzvvcxxwpsvcukvwryyf7scqzys20q2tj07gtkv0ru9mhxxw3mnjcknxff55althx742kvhgqz3kk0z38v7gguxzfn0cagls5xz8n85l9xuxxf0nachr4fxxghq68x00mcqetu0aa')
+      this.sendPayment(this.payreq)
     },
+
     paste () {
-      this.address = '186s6a2P9BxKxYA6rthRk3bUfXT8dsYhsm'
-    console.log('paste')
+      console.log('not implemented')
     },
+
     scan () {
-      this.payreq = payreq.decode('lntb1500n1pd8hmqepp5ckc2xppw56snz2vetuu3sjewugrhutqnpn7227a2yawsregg33aqdyu0v3xgg36yffx2ctyypqhyarfvdkx2w3qvpkxuttsv9ukqgrxdaezqur9dacxcefqw35xzapqwaskuarnypkjytpzdy3r5gn9xucrxvrzxe3z6et9v9sj6dp5v5cz6wfh8ymj6drzvvcxxwpsvcukvwryyf7scqzys20q2tj07gtkv0ru9mhxxw3mnjcknxff55althx742kvhgqz3kk0z38v7gguxzfn0cagls5xz8n85l9xuxxf0nachr4fxxghq68x00mcqetu0aa')
+      this.payreq = payreq.decode('lntb1500n1pd8hmqepp5ckc2xppw56snz2vetuu3sjewugrhutqnpn7227a2yawsregg33aqdyu0v3xgg36yffx2ctyypqhyarfvdkx2w3qvpkxuttsv9ukqgrxdaezqur9dacxcefqw35xzapqwaskuarnypkjytpzdy3r5gn9xucrxvrzxe3z6et9v9sj6dp5v5cz6wfh8ymj6drzvvcxxwpsvcukvwryyf7scqzys20q2tj07gtkv0ru9mhxxw3mnjcknxff55althx742kvhgqz3kk0z38v7gguxzfn0cagls5xz8n85l9xuxxf0nachr4fxxghq68x00mcqetu0aa').paymentRequest
       this.address = this.payreq.payeeNodeKey
       this.amount = this.payreq.satoshis
-      console.log('clicked')
+      this.decode()
       if (typeof window.QRScanner !== 'undefined') {
         console.log('meow')
         window.QRScanner.prepare(onDone); // show the prompt

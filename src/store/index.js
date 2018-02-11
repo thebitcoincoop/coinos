@@ -10,9 +10,10 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: {},
+    user: null,
     transactions: {},
     balance: 0,
+    payreq: '',
   },
   actions: {
     async getTransactions ({ commit }) {
@@ -25,27 +26,31 @@ export default new Vuex.Store({
     },
 
     async getBalance ({ commit }) {
-      let res = await Vue.axios.get('/api/balance')
+      let res = await Vue.axios.get('/balance')
 
       commit('SET_BALANCE', res.data.balance)
     },
 
     async sendPayment ({ commit }, payreq) {
-      let res = await Vue.axios.post('/api/sendPayment', { payreq })
-      /*
-      const client = ds('localhost:6020')
-      client.login()
-      client.event.emit('payment', payreq)
-      */
+      await Vue.axios.post('/sendPayment', { payreq })
+    },
+
+    async addInvoice ({ commit }, amount) {
+      let res = await Vue.axios.post('/addInvoice', { amount })
+
+      commit('SET_PAYREQ', res.data.payment_request)
     },
   },
   mutations: {
     SET_USER (s, v) { s.user = v },
     SET_TRANSACTIONS (s, v) { s.transactions = v },
     SET_BALANCE (s, v) { s.balance = v },
+    SET_PAYREQ (s, v) { s.payreq = v },
   },
   getters: {
     user: s => {
+      if (!s.user) return null
+
       let mnemonic = bip39.generateMnemonic()
       let key = bitcoin.HDNode.fromSeedBuffer(bip39.mnemonicToSeed(mnemonic), bitcoin.networks.testnet).deriveHardened(44).deriveHardened(0)
       let child = key.derive(0).derive(0)
@@ -54,5 +59,6 @@ export default new Vuex.Store({
     },
     transactions: s => s.transactions,
     balance: s => s.balance,
+    payreq: s => s.payreq,
   },
 })

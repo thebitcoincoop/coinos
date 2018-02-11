@@ -5,7 +5,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 import VueApollo from 'vue-apollo'
 
 const httpLink = new HttpLink({
-  uri: '/api/graphql',
+  uri: 'http://192.168.1.64:3000/graphql',
 })
 
 const dataIdFromObject = o => {

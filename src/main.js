@@ -7,6 +7,9 @@ import router from './router'
 import store from './store'
 import 'mdi/css/materialdesignicons.min.css'
 
+const base = process.env.NODE_ENV === 'production' ? 'http://192.168.1.64:3000' : '/api'
+Axios.defaults.baseURL = base
+
 Vue.use(VueAxios, Axios)
 Vue.use(Vuetify, {
   theme: {

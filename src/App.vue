@@ -5,7 +5,7 @@
       v-toolbar-title(dark @click='$router.push("/")')
         img.logo(src='static/img/coinos_logo.png')
       v-spacer
-      v-btn(icon @click='$router.push("/logout")')
+      v-btn(icon @click='$router.push("/about")')
         v-icon(color='yellow') mdi-flash
       v-btn(icon @click='$router.push("/logout")')
         v-icon power_settings_new
@@ -26,22 +26,26 @@
         v-btn(flat dark @click="$router.push('/receive')")
           span Receive
           v-icon mdi-arrow-left-bold-box
-        v-btn(flat dark @click="$router.push('/home')") 
-          span Home
-          v-icon home
+        v-btn(flat dark @click="scan")
+          span Scan
+          v-icon camera_alt
         v-btn(flat dark @click="$router.push('/send')")
           span Send
           v-icon mdi-send
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
-  name: 'app',
+  computed: {
+    ...mapGetters(['user']),
+  }, 
+
   data () {
     return {
       drawer: false,
       menu: [
-        { route: 'home', content: 'Home', icon: 'home' },
         { route: 'send', content: 'Send', icon: 'mdi-send' },
         { route: 'receive', content: 'Receive', icon: 'mdi-arrow-left-bold-box' },
         { route: 'payments', content: 'Payments', icon: 'assignment' },
@@ -51,11 +55,32 @@ export default {
       ]
     }
   },
+
+  watch: {
+    $route (route) {
+      this.authenticate(route)
+    },
+  },
+
   methods: {
+    scan () {
+      console.log(window.QRScanner)
+    }, 
+
     toggleMenu () {
       this.drawer = !this.drawer
-    }
-  }
+    },
+
+    authenticate (route) {
+      if (route.path !== '/login' && !this.user) {
+        this.$router.push('/login')
+      }
+    },
+  },
+
+  async mounted () {
+    this.authenticate(this.$route)
+  },
 }
 </script> 
 
