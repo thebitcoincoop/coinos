@@ -28,7 +28,7 @@ export default {
       e.preventDefault()
       try {
         let res = await this.axios.post('/login', user)
-        this.$store.commit('SET_USER', res.data.user)
+        await this.$store.commit('SET_USER', res.data.user)
         this.$router.push('/' + res.data.user.username)
       } catch (e) {
         this.message = 'Login failed'

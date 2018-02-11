@@ -14,6 +14,7 @@ module.exports = {
   target: 'web',
   node: {
     fs: 'empty',
+    module: 'empty',
   },
   entry: {
     app: './src/main.js'

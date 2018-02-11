@@ -20,17 +20,14 @@ Vue.use(Vuetify, {
   },
 })
 
-if (process.env.CORDOVA) {
-  console.log(process.env.CORDOVA)
-  document.addEventListener('deviceready', function () {
-    Vue.prototype.$cordova = cordova
-  }, false)
+document.addEventListener('deviceready', function () {
+  Vue.prototype.$cordova = cordova
+}, false)
 
-  var tag = document.createElement('script')
-  tag.type = 'text/javascript'
-  document.body.appendChild(tag)
-  tag.src = 'cordova.js'
-}
+var tag = document.createElement('script')
+tag.type = 'text/javascript'
+document.body.appendChild(tag)
+tag.src = 'cordova.js'
 
 /* eslint-disable no-new */
 new Vue({

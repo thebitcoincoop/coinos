@@ -49,12 +49,20 @@ export default new Vuex.Store({
   },
   getters: {
     user: s => {
-      if (!s.user) return null
+      if (!s.user || !s.user.address) {
+        return null
+      } 
 
+      s.user.address = 'mjWfuh2vYua3UWuYEtkBdNpxf94EMyMC9y'
+
+      /*
       let mnemonic = bip39.generateMnemonic()
-      let key = bitcoin.HDNode.fromSeedBuffer(bip39.mnemonicToSeed(mnemonic), bitcoin.networks.testnet).deriveHardened(44).deriveHardened(0)
+      let seed = bip39.mnemonicToSeed(mnemonic)
+      let key = bitcoin.HDNode.fromSeedBuffer(seed, bitcoin.networks.testnet).deriveHardened(44).deriveHardened(0)
       let child = key.derive(0).derive(0)
       s.user.address = child.getAddress().toString()
+      */
+
       return s.user
     },
     transactions: s => s.transactions,

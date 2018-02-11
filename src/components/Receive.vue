@@ -1,5 +1,6 @@
 <template lang="pug">
   div
+    HCE(:accountNumber='total')
     v-snackbar(:bottom="true" v-model="snackbar" :timeout="1500")
       v-icon info
       span Copied to Clipboard
