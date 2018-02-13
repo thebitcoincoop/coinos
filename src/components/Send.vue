@@ -83,7 +83,6 @@ export default {
               if (err) { 
                 console.log(err) 
               } else {
-                console.log(text)
                 this.scanresult = text
               }
 
@@ -103,7 +102,9 @@ export default {
     this.getBalance()
 
     if (typeof cordova !== 'undefined') {
-      window.nfc.addTagDiscoveredListener(event => { vm.fakebalance -= event.tag })
+      console.log('listening for nfc')
+      console.log(window.nfc)
+      window.nfc.addTagDiscoveredListener(e => { vm.fakebalance -= e.tag })
     }
   },
 }

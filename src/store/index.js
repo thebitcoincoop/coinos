@@ -1,9 +1,8 @@
 import apolloClient from '../apollo-client'
 import Vue from 'vue'
 import Vuex from 'vuex'
-import bitcoin from 'bitcoinjs-lib'
-import bip39 from 'bip39'
 import transactionsQuery from '../graphql/transactions.gql'
+import createUser from '../graphql/createUser.gql'
 // import ds from 'deepstream.io-client-js'
 
 Vue.use(Vuex)
@@ -16,6 +15,16 @@ export default new Vuex.Store({
     payreq: '',
   },
   actions: {
+    async createUser ({ commit }, user) {
+      delete user['passconfirm']
+      apolloClient.mutate({
+        mutation: createUser,
+        variables: {
+          user: user,
+        },
+      })
+    },
+
     async getTransactions ({ commit }) {
       let res = await apolloClient.query({
         query: transactionsQuery,
