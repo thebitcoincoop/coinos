@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import Home from '../components/Home'
 import About from '../components/About'
 import Login from '../components/Login'
 import Register from '../components/Register'
@@ -11,6 +12,7 @@ import Settings from '../components/Settings'
 
 const routes = [
   { path: '/', component: Login, props: { logout: false } },
+  { path: '/home', component: Home },
   { path: '/login', component: Login, props: { logout: false } },
   { path: '/register', component: Register },
   { path: '/payments', component: Payments },
@@ -20,8 +22,6 @@ const routes = [
   { path: '/settings', component: Settings },
   { path: '/about', component: About },
   { path: '/logout', component: Login, props: { logout: true } },
-  { path: '/:user', component: Receive },
-  { path: '/about', component: About },
 ]
 
 Vue.use(VueRouter)

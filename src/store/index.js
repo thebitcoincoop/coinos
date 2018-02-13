@@ -62,8 +62,6 @@ export default new Vuex.Store({
         return null
       } 
 
-      s.user.address = 'mjWfuh2vYua3UWuYEtkBdNpxf94EMyMC9y'
-
       /*
       let mnemonic = bip39.generateMnemonic()
       let seed = bip39.mnemonicToSeed(mnemonic)

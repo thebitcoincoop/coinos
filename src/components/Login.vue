@@ -29,13 +29,19 @@ export default {
       try {
         let res = await this.axios.post('/login', user)
         await this.$store.commit('SET_USER', res.data.user)
-        this.$router.push('/' + res.data.user.username)
+        this.$router.push('/home')
       } catch (e) {
         this.message = 'Login failed'
         console.log(e)
       }
     }
-  }
+  },
+
+  created () {
+    if (this.logout) {
+      this.$store.commit('SET_USER', null)
+    }
+  },
 }
 </script>
 

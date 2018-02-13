@@ -1,7 +1,7 @@
 <template lang="pug">
   v-app(dark)
     v-toolbar(app dark color="primary" clipped-left fixed)
-      v-toolbar-side-icon(@click.stop='toggleMenu')
+      v-toolbar-side-icon(v-if='user' @click.stop='toggleMenu')
       v-toolbar-title(dark @click='$router.push("/")')
         img.logo(src='static/img/coinos_logo.png')
       v-spacer
@@ -9,7 +9,7 @@
         v-icon(color='yellow') mdi-flash
       v-btn(icon @click='$router.push("/logout")')
         v-icon power_settings_new
-    v-navigation-drawer.primary(v-model='drawer' enable-resize-watcher app clipped)
+    v-navigation-drawer.primary(v-if='user' v-model='drawer' enable-resize-watcher app clipped)
       v-list.secondary
         template(v-for='i in menu') 
           v-list-tile(:key='i.route' ripple @click='$router.push(i.route)')
@@ -46,6 +46,7 @@ export default {
     return {
       drawer: false,
       menu: [
+        { route: 'home', content: 'Home', icon: 'home' },
         { route: 'send', content: 'Send', icon: 'mdi-send' },
         { route: 'receive', content: 'Receive', icon: 'mdi-arrow-left-bold-box' },
         { route: 'payments', content: 'Payments', icon: 'assignment' },
@@ -78,7 +79,7 @@ export default {
     },
   },
 
-  async mounted () {
+  async created () {
     this.authenticate(this.$route)
   },
 }

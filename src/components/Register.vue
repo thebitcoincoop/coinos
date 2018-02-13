@@ -28,6 +28,7 @@ v-layout
           commission: '',
           pubkey: '',
           privkey: '',
+          address: '',
         }, 
         error: '',
       }
