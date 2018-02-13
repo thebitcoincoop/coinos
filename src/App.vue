@@ -73,7 +73,8 @@ export default {
     },
 
     authenticate (route) {
-      if (route.path !== '/login' && !this.user) {
+      const publicpaths = ['/login', '/about']
+      if (!publicpaths.includes(route.path) && !this.user) {
         this.$router.push('/login')
       }
     },

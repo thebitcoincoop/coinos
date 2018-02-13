@@ -1,5 +1,5 @@
 <template>
-  <canvas id='c' width='100%' height='250'></canvas>
+  <canvas id='c' height='100'></canvas>
 </template>
 
 <script>
@@ -1965,5 +1965,8 @@
 
 <style lang="stylus">
   canvas
-    position absolute
+    position relative
+    margin-left 15px
+    height 250px
+    width 300px
 </style>

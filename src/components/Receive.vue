@@ -23,12 +23,15 @@
           numpad(:currency='user.currency', :amount='amount', @update='a => amount = a')
         v-flex(xs3)
           tippad(:amount='amount', @update='t => tip = t')
-      div
+      div(v-if='valid')
         span.display-1 {{total}} 
         span.title satoshis
-      v-btn(@click='generate') 
-        v-icon.mr-1 send
-        span Go
+        v-layout
+          v-flex.text-xs-center(xs12)
+            v-btn(@click='generate') 
+              v-icon.mr-1 send
+              span Generate Invoice
+      v-alert(v-else value='!valid') Can't request more than 0.04294967 BTC
 </template>
 
 <script>
@@ -67,7 +70,12 @@ export default {
 
     total () {
       this.received = 0
-      return parseInt(((f(this.amount) + f(this.tip)) / this.rate) * 100000000)
+      let total = (f(this.amount) + f(this.tip)) / this.rate
+      return parseInt(total * 100000000)
+    },
+
+    valid () {
+      return this.total < 4294967
     },
   },
   methods: {
@@ -116,7 +124,7 @@ export default {
 }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
   canvas
     position relative
     display block
