@@ -9,7 +9,7 @@ div
         v-btn(:data-clipboard-text='user.address' @click.native="snackbar = true")
           v-icon.mr-1 content_copy
           span Copy
-      v-btn(v-if='balance > 0')
+      v-btn(v-if='balance > 0' @click='openChannel')
        v-icon.mr-1(color='yellow') mdi-flash
        span Open Lightning Channel
 </template>
@@ -33,13 +33,13 @@ export default {
   }, 
 
   methods: {
-    ...mapActions(['getBalance']),
+    ...mapActions(['getBalance', 'openChannel']),
   },
 
   mounted () {
     this.getBalance() 
 
-    const io = socketio('localhost:3000')
+    const io = socketio(process.env.SOCKETIO)
     const vm = this
 
     io.on('tx', data => {

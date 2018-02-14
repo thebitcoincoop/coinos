@@ -39,8 +39,7 @@ import axios from 'axios'
 import bitcoin from 'bitcoinjs-lib'
 import qr from 'qrcode'
 import payreq from 'bolt11'
-import deepstream from 'deepstream.io-client-js'
-
+import socketio from 'socket.io-client'
 import numpad from './NumPad'
 import tippad from './TipPad'
 import HCE from './HCE'
@@ -94,11 +93,10 @@ export default {
     ...mapActions(['addInvoice']),
   },
   mounted () {
-    const ds = deepstream('192.168.1.64:6020')
-    ds.login()
     const vm = this
+    const io = socketio(process.env.SOCKETIO)
 
-    ds.event.subscribe('tx', data => {
+    io.on('tx', data => {
       bitcoin.Transaction.fromHex(data).outs.map(o => {
         try {
           let address = bitcoin.address.fromOutputScript(o.script, bitcoin.networks.testnet)
@@ -111,10 +109,10 @@ export default {
       })
     })
 
-    ds.event.subscribe('invoices', data => {
+    io.on('invoices', data => {
       console.log(data)
       // this.received = data.value
-      var audio = new Audio('/static/success.wav')
+      let audio = new Audio('/static/success.wav')
       audio.play()
     })
 

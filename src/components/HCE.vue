@@ -53,9 +53,7 @@ export default {
   },
 
   mounted () {
-    console.log('in HCE now')
     if (typeof window.hce !== 'undefined') {
-      console.log('found hce on window')
       window.hce.registerCommandCallback(this.onCommand)
       window.hce.registerDeactivatedCallback(this.onDeactivated)
     }
