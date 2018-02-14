@@ -87,8 +87,6 @@ export default {
 </script> 
 
 <style lang="stylus">
-@require '../node_modules/vuetify/dist/vuetify.min.css'
-
 .toolbar__title
   cursor pointer
 
