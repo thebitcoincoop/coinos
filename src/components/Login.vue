@@ -16,7 +16,7 @@ export default {
   data () {
     return {
       user: {
-        username: 'yy',
+        username: 'bob',
         password: 'pw'
       },
       message: ''

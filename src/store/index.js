@@ -3,7 +3,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import transactionsQuery from '../graphql/transactions.gql'
 import createUser from '../graphql/createUser.gql'
-// import ds from 'deepstream.io-client-js'
 
 Vue.use(Vuex)
 
@@ -17,7 +16,7 @@ export default new Vuex.Store({
   actions: {
     async createUser ({ commit }, user) {
       delete user['passconfirm']
-      apolloClient.mutate({
+      await apolloClient.mutate({
         mutation: createUser,
         variables: {
           user: user,

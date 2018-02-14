@@ -1,5 +1,5 @@
 <template>
-  <canvas id='c' height='100'></canvas>
+  <canvas id='c'></canvas>
 </template>
 
 <script>
@@ -1360,8 +1360,8 @@
       }
 
       function resize(e) {
-          canvas.width = window.innerWidth;
-          canvas.height = window.innerHeight;
+          canvas.width = 300;
+          canvas.height = 200;
           context = canvas.getContext('2d');
           context.lineCap = 'round';
       }

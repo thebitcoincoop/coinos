@@ -1,7 +1,6 @@
 <template lang="pug">
 v-container
   h2 Balance: {{balance}}
-  h2 Fake Balance: {{fakebalance}}
   v-text-field(label='Invoice' dark v-model='payreq' @input='decode')
   v-list.elevation-1(v-if='payobj')
     v-list-tile
@@ -40,7 +39,6 @@ export default {
       scanresult: '',
       payreq: '',
       payobj: '',
-      fakebalance: 2500,
     }
   },
 
@@ -104,7 +102,7 @@ export default {
     if (typeof cordova !== 'undefined') {
       console.log('listening for nfc')
       console.log(window.nfc)
-      window.nfc.addTagDiscoveredListener(e => { vm.fakebalance -= e.tag })
+      window.nfc.addTagDiscoveredListener(e => { console.log('tap detected', e) })
     }
   },
 }

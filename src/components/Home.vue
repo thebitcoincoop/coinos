@@ -1,23 +1,22 @@
 <template lang='pug'>
 div
-  v-divider
+  h2 Balance {{balance}}
   v-layout
-    video(v-if='playing' width='300' height='200' ref='test')
-      source(src="static/lightning.mp4" type="video/mp4")
-  v-layout
-    v-flex(xs12)
+    v-flex.text-xs-center(xs12)
       v-card.pa-3.text-xs-center
         canvas#qr
         pre {{user.address}}
         v-btn(:data-clipboard-text='user.address' @click.native="snackbar = true")
-          v-icon content_copy
-        v-btn
-          v-icon mdi-cellphone-wireless
+          v-icon.mr-1 content_copy
+          span Copy
+      v-btn(v-if='balance > 0')
+       v-icon.mr-1(color='yellow') mdi-flash
+       span Open Lightning Channel
 </template>
 
 <script>
 import bitcoin from 'bitcoinjs-lib'
-import deepstream from 'deepstream.io-client-js'
+import socketio from 'socket.io-client'
 import qr from 'qrcode'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -30,31 +29,27 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['user']),
+    ...mapGetters(['user', 'balance']),
   }, 
 
   methods: {
-    start () {
-      this.playing = true
-      this.$nextTick(() => {
-        this.$refs.test.play()
-      })
-    },
+    ...mapActions(['getBalance']),
   },
 
   mounted () {
-    const ds = deepstream('192.168.1.64:6020')
-    ds.login()
+    this.getBalance() 
+
+    const io = socketio('localhost:3000')
     const vm = this
 
-    ds.event.subscribe('tx', data => {
-      console.log(data)
-      bitcoin.Transaction.fromHex(data).outs.map(o => {
+    io.on('tx', data => {
+      let tx = bitcoin.Transaction.fromHex(data)
+      tx.outs.map(o => {
         try {
           let address = bitcoin.address.fromOutputScript(o.script, bitcoin.networks.testnet)
           if (address === this.user.address) {
             this.received = o.value
-            this.start()
+            this.getBalance()
           } 
         } catch(e) { }
       })

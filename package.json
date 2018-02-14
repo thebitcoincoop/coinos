@@ -34,7 +34,7 @@
     "mdi": "^2.1.19",
     "moment": "^2.20.1",
     "qrcode": "^0.9.0",
-    "socket.io-client": "^2.0.3",
+    "socket.io-client": "^2.0.4",
     "uglifyjs-webpack-plugin": "^1.1.6",
     "vue": "^2.1.0",
     "vue-apollo": "^3.0.0-alpha.2",
