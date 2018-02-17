@@ -1,23 +1,37 @@
 <template lang="pug">
 v-container
   h2 Balance: {{user.channelbalance}}
-  v-text-field(label='Invoice' dark v-model='payreq' @input='decode')
-  v-list.elevation-1(v-if='payobj')
-    v-list-tile
-      v-list-tile-title Amount
-      v-list-tile-sub-title {{payobj.satoshis}}
-    v-list-tile
-      v-list-tile-title Recipient
-      v-list-tile-sub-title {{payobj.payeeNodeKey | trim}}
-    v-list-tile
-      v-list-tile-title Date
-      v-list-tile-sub-title {{payobj.timestampString | format}}
-  v-btn(@click='scan')
-    v-icon.mr-1 camera_alt
-    span Scan
-  v-btn(v-if='payobj' color="green" dark @click='send')
-    v-icon.mr-1 send
-    span Pay
+  v-card(v-if='payment')
+    v-alert.headline(value='true' color='success') Payment Sent!
+    v-list
+      v-list-tile
+        v-list-tile-title Amount
+        v-list-tile-sub-title {{payment.payment_route.total_amt}}
+      v-list-tile
+        v-list-tile-title Fees
+        v-list-tile-sub-title {{payment.payment_route.total_fees}}
+    v-card-actions
+      v-btn(@click='clear') 
+        v-icon mdi-flash
+        span Send Another
+  template(v-else)
+    v-text-field(label='Invoice' dark v-model='payreq' @input='decode')
+    v-list.elevation-1(v-if='payobj')
+      v-list-tile
+        v-list-tile-title Amount
+        v-list-tile-sub-title {{payobj.satoshis}}
+      v-list-tile
+        v-list-tile-title Recipient
+        v-list-tile-sub-title {{payobj.payeeNodeKey | trim}}
+      v-list-tile
+        v-list-tile-title Date
+        v-list-tile-sub-title {{payobj.timestampString | format}}
+    v-btn(@click='scan')
+      v-icon.mr-1 camera_alt
+      span Scan
+    v-btn(v-if='payobj' color="green" dark @click='send')
+      v-icon.mr-1 send
+      span Pay
 </template>
 
 <script>
@@ -25,6 +39,7 @@ import Lightning from './Lightning'
 import { mapGetters, mapActions } from 'vuex'
 import payreq from 'bolt11'
 import date from 'date-fns'
+import socketio from 'socket.io-client'
 
 export default {
   components: { Lightning },
@@ -47,10 +62,15 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['balance', 'user'])
+    ...mapGetters(['balance', 'user', 'payment'])
   }, 
 
   methods: {
+    clear () {
+      this.payreq = ''
+      this.clearPayment()
+    },
+
     decode () {
       this.payobj = null
       try { 
@@ -58,8 +78,9 @@ export default {
       } catch (e) {}
     },
 
-    send () {
-      this.sendPayment(this.payreq)
+    async send () {
+      await this.sendPayment(this.payreq)
+      this.getChannelBalance()
     },
 
     paste () {
@@ -92,12 +113,13 @@ export default {
       } 
     },
 
-    ...mapActions(['getChannelBalance', 'sendPayment']),
+    ...mapActions(['getChannelBalance', 'sendPayment', 'clearPayment']),
   },
 
   mounted () {
     let vm = this
     this.getChannelBalance()
+    this.clearPayment()
 
     if (typeof cordova !== 'undefined') {
       console.log('listening for nfc')
@@ -109,6 +131,6 @@ export default {
 </script>
 
 <style lang="stylus">
-.small input
-  font-size 14px
+  .icon
+    width 40px !important
 </style>

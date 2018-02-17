@@ -14,6 +14,7 @@ export default new Vuex.Store({
     transactions: {},
     balance: 0,
     payreq: '',
+    payment: null,
   },
   actions: {
     async createUser ({ commit }, user) {
@@ -73,9 +74,14 @@ export default new Vuex.Store({
       await dispatch('getUser')
     },
 
-    async sendPayment ({ commit, dispatch }, payreq) {
-      await Vue.axios.post('/sendPayment', { payreq })
+    async sendPayment ({ commit, state, dispatch }, payreq) {
+      let res = await Vue.axios.post('/sendPayment', { payreq })
+      commit('SET_PAYMENT', res.data)
       await dispatch('getChannelBalance')
+    },
+
+    async clearPayment ({ commit }) {
+      commit('SET_PAYMENT', null)
     },
 
     async addInvoice ({ commit }, amount) {
@@ -90,6 +96,7 @@ export default new Vuex.Store({
     SET_BALANCE (s, v) { s.balance = v },
     SET_CHANNEL_BALANCE (s, v) { Vue.set(s.user, 'channelbalance', v) },
     SET_PAYREQ (s, v) { s.payreq = v },
+    SET_PAYMENT (s, v) { s.payment = v },
   },
   getters: {
     user: s => {
@@ -110,5 +117,6 @@ export default new Vuex.Store({
     transactions: s => s.transactions,
     balance: s => s.balance,
     payreq: s => s.payreq,
+    payment: s => s.payment,
   },
 })
