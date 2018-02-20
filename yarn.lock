@@ -7028,6 +7028,13 @@ vue-material-design-icons@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/vue-material-design-icons/-/vue-material-design-icons-1.0.0.tgz#d42b1b5bfa42782ed2cc8cfb7df821e43fa8ab83"
 
+vue-qr@^1.2.7:
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/vue-qr/-/vue-qr-1.2.7.tgz#681f5855f653566bba138558c301404a0548dd9c"
+  dependencies:
+    uuid "^3.1.0"
+    vue "^2.5.13"
+
 vue-resource@^1.3.1:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/vue-resource/-/vue-resource-1.3.4.tgz#9fc0bdf6a2f5cab430129fc99d347b3deae7b099"

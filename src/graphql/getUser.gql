@@ -1,0 +1,8 @@
+query users ($username: String!) {
+  users(where: { username: $username }) {
+    username,
+    balance,
+    channel,
+    address,
+  }
+}

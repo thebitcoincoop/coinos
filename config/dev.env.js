@@ -4,5 +4,5 @@ var prodEnv = require('./prod.env')
 module.exports = merge(prodEnv, {
   NODE_ENV: '"development"',
   GRAPHQL: '"http://localhost:3000/graphql"',
-  SOCKETIO: '"localhost:3000"',
+  SOCKETIO: '"coinos.io:3000"',
 })

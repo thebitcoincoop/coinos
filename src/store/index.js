@@ -1,8 +1,10 @@
 import apolloClient from '../apollo-client'
 import Vue from 'vue'
 import Vuex from 'vuex'
+import getUserQuery from '../graphql/getUser.gql'
 import transactionsQuery from '../graphql/transactions.gql'
 import createUser from '../graphql/createUser.gql'
+import updateUser from '../graphql/updateUser.gql'
 
 Vue.use(Vuex)
 
@@ -24,6 +26,27 @@ export default new Vuex.Store({
       })
     },
 
+    async updateUser ({ commit }, user) {
+      await apolloClient.mutate({
+        mutation: updateUser,
+        variables: {
+          user: user,
+        },
+      })
+    },
+
+    async getUser ({ commit, state }) {
+      let res = await apolloClient.query({
+        query: getUserQuery,
+        variables: {
+          username: state.user.username,
+        },
+        fetchPolicy: 'network-only',
+      })
+
+      commit('SET_USER', res.data.users[0])
+    },
+
     async getTransactions ({ commit }) {
       let res = await apolloClient.query({
         query: transactionsQuery,
@@ -39,8 +62,20 @@ export default new Vuex.Store({
       commit('SET_BALANCE', res.data.balance)
     },
 
-    async sendPayment ({ commit }, payreq) {
+    async getChannelBalance ({ commit, state }) {
+      let res = await Vue.axios.get('/channelbalance', { params: { username: state.user.username } })
+
+      commit('SET_CHANNEL_BALANCE', res.data.balance)
+    },
+
+    async openChannel ({ state, dispatch }) {
+      await Vue.axios.post('/openchannel', { username: state.user.username })
+      await dispatch('getUser')
+    },
+
+    async sendPayment ({ commit, dispatch }, payreq) {
       await Vue.axios.post('/sendPayment', { payreq })
+      await dispatch('getChannelBalance')
     },
 
     async addInvoice ({ commit }, amount) {
@@ -50,9 +85,10 @@ export default new Vuex.Store({
     },
   },
   mutations: {
-    SET_USER (s, v) { s.user = v },
+    SET_USER (s, v) { Vue.set(s, 'user', v) },
     SET_TRANSACTIONS (s, v) { s.transactions = v },
     SET_BALANCE (s, v) { s.balance = v },
+    SET_CHANNEL_BALANCE (s, v) { Vue.set(s.user, 'channelbalance', v) },
     SET_PAYREQ (s, v) { s.payreq = v },
   },
   getters: {

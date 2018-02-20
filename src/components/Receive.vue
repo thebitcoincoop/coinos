@@ -110,8 +110,7 @@ export default {
     })
 
     io.on('invoices', data => {
-      console.log(data)
-      // this.received = data.value
+      this.received = data.value
       let audio = new Audio('/static/success.wav')
       audio.play()
     })

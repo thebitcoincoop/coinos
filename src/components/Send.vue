@@ -1,6 +1,6 @@
 <template lang="pug">
 v-container
-  h2 Balance: {{balance}}
+  h2 Balance: {{user.channelbalance}}
   v-text-field(label='Invoice' dark v-model='payreq' @input='decode')
   v-list.elevation-1(v-if='payobj')
     v-list-tile
@@ -11,7 +11,7 @@ v-container
       v-list-tile-sub-title {{payobj.payeeNodeKey | trim}}
     v-list-tile
       v-list-tile-title Date
-      v-list-tile-sub-title {{payobj.timestampString}}
+      v-list-tile-sub-title {{payobj.timestampString | format}}
   v-btn(@click='scan')
     v-icon.mr-1 camera_alt
     span Scan
@@ -24,6 +24,7 @@ v-container
 import Lightning from './Lightning'
 import { mapGetters, mapActions } from 'vuex'
 import payreq from 'bolt11'
+import date from 'date-fns'
 
 export default {
   components: { Lightning },
@@ -32,6 +33,10 @@ export default {
     trim (w) {
       return w.substring(0, 12)
     },
+
+    format (d) {
+      return date.format(d, 'MMM D, YYYY HH:mm')
+    } 
   },
 
   data () {
@@ -43,7 +48,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['balance'])
+    ...mapGetters(['balance', 'user'])
   }, 
 
   methods: {
@@ -92,12 +97,12 @@ export default {
       } 
     },
 
-    ...mapActions(['getBalance', 'sendPayment']),
+    ...mapActions(['getChannelBalance', 'sendPayment']),
   },
 
   mounted () {
     let vm = this
-    this.getBalance()
+    this.getChannelBalance()
 
     if (typeof cordova !== 'undefined') {
       console.log('listening for nfc')

@@ -1,7 +1,7 @@
 <template lang="pug">
 v-layout
   v-flex(xs12 md3)
-    v-alert(v-if='error') {{error}}
+    v-alert(v-if='error' value='error') {{error}}
     v-form(@submit='submit')
       v-text-field(label='Username' v-model='user.username' autofocus)
       v-text-field(label='Email' v-model='user.email')
@@ -37,14 +37,14 @@ v-layout
     methods: {
       async submit (e) {
         e.preventDefault()
-        await this.createUser(this.user)
+
         try {
+          await this.createUser(this.user)
           let res = await this.axios.post('/login', this.user)
           await this.$store.commit('SET_USER', res.data.user)
           this.$router.push('/home')
         } catch (e) {
-          this.message = 'Login failed'
-          console.log(e)
+          this.error = e.graphQLErrors[0].message
         }
       },
 
