@@ -9,11 +9,14 @@
       v-layout(v-else)
         v-flex(xs12)
           v-card.pa-3.text-xs-center
-            canvas#qr
+            div.code(v-if='showcode') {{payreq}}
+            canvas#qr(v-show='!showcode')
+            v-btn(@click.native="showcode = !showcode")
+              v-icon code
+              span {{code}}
             v-btn(:data-clipboard-text='payreq' @click.native="snackbar = true")
               v-icon content_copy
-            v-btn
-              v-icon mdi-cellphone-wireless
+              span Copy
       v-btn(@click='generated = false') 
         v-icon.mr-1 arrow_back
         span Back
@@ -62,10 +65,15 @@ export default {
       snackbar: false,
       received: 0,
       generated: false,
+      showcode: false,
     }
   },
   computed: {
     ...mapGetters(['user', 'payreq']),
+
+    code () {
+      return this.showcode ? 'Show QR' : 'Show Code'
+    }, 
 
     total () {
       this.received = 0
@@ -79,6 +87,7 @@ export default {
   },
   methods: {
     async generate () {
+      this.received = 0
       this.generated = true
       await this.addInvoice(this.total)
       let canvas = document.getElementById('qr')
@@ -128,4 +137,12 @@ export default {
     height 100%
     margin-left auto
     margin-right auto
+
+  .code
+    margin auto
+    width 260px
+    height 260px
+    background #333
+    word-wrap break-word
+    padding 15px
 </style>

@@ -41,7 +41,6 @@ export default {
 
   data () {
     return {
-      scanresult: '',
       payreq: '',
       payobj: '',
     }
@@ -68,11 +67,6 @@ export default {
     },
 
     scan () {
-      this.payreq = payreq.decode('lntb1500n1pd8hmqepp5ckc2xppw56snz2vetuu3sjewugrhutqnpn7227a2yawsregg33aqdyu0v3xgg36yffx2ctyypqhyarfvdkx2w3qvpkxuttsv9ukqgrxdaezqur9dacxcefqw35xzapqwaskuarnypkjytpzdy3r5gn9xucrxvrzxe3z6et9v9sj6dp5v5cz6wfh8ymj6drzvvcxxwpsvcukvwryyf7scqzys20q2tj07gtkv0ru9mhxxw3mnjcknxff55althx742kvhgqz3kk0z38v7gguxzfn0cagls5xz8n85l9xuxxf0nachr4fxxghq68x00mcqetu0aa').paymentRequest
-      this.address = this.payreq.payeeNodeKey
-      this.amount = this.payreq.satoshis
-      this.decode()
-
       if (typeof window.QRScanner !== 'undefined') {
         window.QRScanner.prepare((err, status) => {
           if (err) {
@@ -86,7 +80,8 @@ export default {
               if (err) { 
                 console.log(err) 
               } else {
-                this.scanresult = text
+                this.payreq = text
+                this.decode()
               }
 
               document.querySelector('.application').style.display = 'block'
